@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh giá phòng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Inter', sans-serif; }
+        .review-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            background: #fff;
+        }
+        .review-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .rating-stars {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        .rating-stars input { display: none; }
+        .rating-stars label { color: #ddd; cursor: pointer; transition: color 0.2s; }
+        .rating-stars input:checked ~ label { color: #ffc107; }
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label { color: #ffc107; }
+        .btn-submit {
+            background-color: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .btn-submit:hover {
+            background-color: #5a6edb;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+    
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                
+                <div th:if="${errorMessage}" class="alert alert-danger mb-4 text-center">
+                    <span th:text="${errorMessage}"></span>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-header">
+                        <h3 class="mb-0 fw-bold">Đánh giá trải nghiệm</h3>
+                        <p class="mb-0 mt-2 text-white-50">Cảm ơn bạn đã lựa chọn khách sạn của chúng tôi!</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-4 text-center">
+                            <h5 class="fw-bold mb-1">Mã đặt phòng: <span class="text-primary" th:text="${booking.bookingCode}"></span></h5>
+                            <p class="text-muted small">Phòng: <span th:text="${booking.bookingDetails[0].room.roomNumber}"></span> - <span th:text="${booking.bookingDetails[0].room.roomType.name}"></span></p>
+                        </div>
+                        
+                        <form th:action="@{/customer/reviews/create}" method="post">
+                            <input type="hidden" name="bookingId" th:value="${booking.id}">
+                            
+                            <div class="mb-4 text-center">
+                                <label class="form-label fw-bold d-block mb-3">Bạn đánh giá chất lượng phòng thế nào?</label>
+                                <div class="rating-stars">
+                                    <input type="radio" id="star5" name="rating" value="5" required />
+                                    <label for="star5"><i class="fas fa-star"></i></label>
+                                    
+                                    <input type="radio" id="star4" name="rating" value="4" />
+                                    <label for="star4"><i class="fas fa-star"></i></label>
+                                    
+                                    <input type="radio" id="star3" name="rating" value="3" />
+                                    <label for="star3"><i class="fas fa-star"></i></label>
+                                    
+                                    <input type="radio" id="star2" name="rating" value="2" />
+                                    <label for="star2"><i class="fas fa-star"></i></label>
+                                    
+                                    <input type="radio" id="star1" name="rating" value="1" />
+                                    <label for="star1"><i class="fas fa-star"></i></label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="comment" class="form-label fw-bold">Nhận xét của bạn</label>
+                                <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="Chia sẻ thêm về trải nghiệm của bạn (tiện nghi, dịch vụ, thái độ nhân viên...)" required></textarea>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-submit">Gửi Đánh Giá</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

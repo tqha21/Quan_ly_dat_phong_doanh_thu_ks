@@ -1,0 +1,4 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org"><head><title>User</title></head><body>
+<h2>Quản lý người dùng</h2><table border="1"><tr><th>Tên</th><th>Email</th><th>Trạng thái</th><th></th></tr>
+<tr th:each="u:${users}"><td th:text="${u.fullName}"></td><td th:text="${u.email}"></td><td th:text="${u.status}"></td><td><form th:action="@{'/admin/users/'+${u.id}+'/toggle-status'}" method="post"><button>Cập nhật</button></form></td></tr></table>
+</body></html>

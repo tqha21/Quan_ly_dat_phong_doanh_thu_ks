@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký - Quản lý Khách sạn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .auth-card { 
+            max-width: 500px; 
+            margin: 40px auto; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+            border: none;
+        }
+        .btn-custom {
+            background-color: #667eea;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #5a6cd6;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card auth-card">
+        <div class="card-body p-5">
+            <h3 class="text-center mb-4 text-primary fw-bold" style="color: #667eea !important;">TẠO TÀI KHOẢN</h3>
+            
+            <div th:if="${errorMessage}" class="alert alert-danger shadow-sm text-center" th:text="${errorMessage}"></div>
+
+            <form th:action="@{/register}" method="post" th:object="${registerRequest}">
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold">Họ và tên</label>
+                    <input type="text" class="form-control" th:field="*{fullName}" th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid' : ''" placeholder="Vd: Nguyễn Văn A">
+                    <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold">Email</label>
+                    <input type="email" class="form-control" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" placeholder="Vd: email@gmail.com">
+                    <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold">Số điện thoại</label>
+                    <input type="text" class="form-control" th:field="*{phone}" th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''" placeholder="Vd: 0987654321">
+                    <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold">Mật khẩu</label>
+                    <input type="password" class="form-control" th:field="*{password}" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''" placeholder="********">
+                    <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label text-muted fw-bold">Xác nhận mật khẩu</label>
+                    <input type="password" class="form-control" th:field="*{confirmPassword}" th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''" placeholder="********">
+                    <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+                </div>
+                
+                <button type="submit" class="btn btn-custom btn-lg w-100 text-white fw-bold mb-3">ĐĂNG KÝ</button>
+            </form>
+            
+            <div class="text-center mt-2">
+                <p class="text-muted">Đã có tài khoản? <a th:href="@{/login}" class="text-decoration-none fw-bold" style="color: #667eea;">Đăng nhập</a></p>
+                <a th:href="@{/}" class="text-decoration-none text-muted small">← Quay lại trang chủ</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cập nhật Phòng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Inter', sans-serif; }
+        .wrapper { display: flex; }
+        .content { padding: 40px; width: 100%; }
+        .custom-card { border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: none; }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="~{fragments/admin-sidebar :: sidebar}"></div>
+    
+    <div class="content">
+        <div class="mb-4">
+            <a th:href="@{/admin/rooms}" class="btn btn-outline-secondary btn-sm mb-3 shadow-sm fw-bold"><i class="bi bi-arrow-left"></i> Quay lại danh sách</a>
+            <h2 class="fw-bold text-dark" th:text="${roomDTO.id == null ? 'Thêm Phòng Mới' : 'Cập Nhật Phòng'}"></h2>
+        </div>
+
+        <div class="card custom-card" style="max-width: 800px;">
+            <div class="card-body p-4 p-md-5">
+                <div th:if="${errorMessage}" class="alert alert-danger shadow-sm" th:text="${errorMessage}"></div>
+
+                <form th:action="@{/admin/rooms/save}" method="post" th:object="${roomDTO}">
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-muted">Số phòng (Mã phòng) <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-lg" th:field="*{roomNumber}" th:classappend="${#fields.hasErrors('roomNumber')} ? 'is-invalid' : ''" placeholder="Vd: 101, VIP-205">
+                            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('roomNumber')}" th:errors="*{roomNumber}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-muted">Hạng phòng (Loại phòng) <span class="text-danger">*</span></label>
+                            <select class="form-select form-control-lg" th:field="*{roomTypeId}" th:classappend="${#fields.hasErrors('roomTypeId')} ? 'is-invalid' : ''">
+                                <option value="">-- Chọn hạng phòng --</option>
+                                <!-- Lặp danh sách RoomType lấy từ Controller -->
+                                <option th:each="rt : ${roomTypes}" 
+                                        th:value="${rt.id}" 
+                                        th:text="${rt.name + ' (' + #numbers.formatDecimal(rt.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ)'}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('roomTypeId')}" th:errors="*{roomTypeId}"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-muted">Tầng <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" th:field="*{floor}" th:classappend="${#fields.hasErrors('floor')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-muted">Trạng thái hiện tại</label>
+                            <select class="form-select text-dark" th:field="*{status}">
+                                <option value="AVAILABLE">Trống (Sẵn sàng)</option>
+                                <option value="OCCUPIED">Đang có khách</option>
+                                <option value="MAINTENANCE">Đang bảo trì</option>
+                                <option value="INACTIVE">Ngừng hoạt động</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="form-label fw-bold text-muted">Mô tả thêm về phòng này</label>
+                        <textarea class="form-control" th:field="*{description}" rows="4" placeholder="Ví dụ: Phòng góc có cửa sổ hướng biển..."></textarea>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold px-5 shadow-sm" style="background-color: #667eea; border: none;">
+                            <i class="bi bi-save me-1"></i> LƯU DỮ LIỆU PHÒNG
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
