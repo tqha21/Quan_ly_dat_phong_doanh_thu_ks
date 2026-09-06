@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Quản lý Khách sạn</title>
+    <!-- Ưu tiên UI/UX: Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .auth-card { 
+            max-width: 400px; 
+            margin: auto; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+            border: none;
+        }
+        .btn-custom {
+            background-color: #667eea;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #5a6cd6;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card auth-card">
+        <div class="card-body p-5">
+            <h3 class="text-center mb-4 text-primary fw-bold" style="color: #667eea !important;">LUXURY HOTEL</h3>
+            
+            <div th:if="${param.error}" class="alert alert-danger shadow-sm text-center">
+                Tài khoản hoặc mật khẩu không chính xác!
+            </div>
+            <div th:if="${param.logout}" class="alert alert-info shadow-sm text-center">
+                Bạn đã đăng xuất an toàn.
+            </div>
+            <div th:if="${param.registered}" class="alert alert-success shadow-sm text-center">
+                Đăng ký thành công! Đăng nhập ngay.
+            </div>
+
+            <!-- Form xử lý bởi Spring Security -->
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold">Email</label>
+                    <input type="email" name="username" class="form-control form-control-lg" required placeholder="Nhập email...">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted fw-bold">Mật khẩu</label>
+                    <input type="password" name="password" class="form-control form-control-lg" required placeholder="********">
+                </div>
+                <button type="submit" class="btn btn-custom btn-lg w-100 text-white fw-bold mb-3">ĐĂNG NHẬP</button>
+            </form>
+            
+            <div class="text-center mt-3">
+                <p class="text-muted">Chưa có tài khoản? <a th:href="@{/register}" class="text-decoration-none fw-bold" style="color: #667eea;">Đăng ký</a></p>
+                <a th:href="@{/}" class="text-decoration-none text-muted small">← Quay lại trang chủ</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
