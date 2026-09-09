@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -34,3 +35,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+=======
+﻿target/
+out/
+.idea/
+*.iml
+>>>>>>> feature/huan

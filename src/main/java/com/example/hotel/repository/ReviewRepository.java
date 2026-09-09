@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, String> {
     List<Review> findByRoom_IdAndStatus(String roomId, String status);
+<<<<<<< HEAD
+=======
+    boolean existsByBooking_IdAndCustomer_Id(String bookingId, String customerId);
+>>>>>>> feature/huan
 }

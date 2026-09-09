@@ -24,6 +24,11 @@
     <div th:if="${param.cancelled}" class="alert alert-info shadow-sm rounded-3">
         <i class="bi bi-info-circle-fill me-2"></i> Bạn đã hủy đặt phòng thành công.
     </div>
+<<<<<<< HEAD
+=======
+    <div th:if="${param.reviewError == 'notCheckedOut'}" class="alert alert-warning shadow-sm rounded-3">Bạn chỉ có thể đánh giá sau khi đã trả phòng.</div>
+    <div th:if="${param.reviewError == 'alreadyReviewed'}" class="alert alert-info shadow-sm rounded-3">Đơn đặt phòng này đã được đánh giá.</div>
+>>>>>>> feature/huan
     <div th:if="${errorMessage}" class="alert alert-danger shadow-sm rounded-3" th:text="${errorMessage}"></div>
 
     <div class="card shadow-sm border-0 rounded-4">
@@ -64,7 +69,12 @@
                             <form th:if="${b.status == 'PENDING'}" th:action="@{/customer/bookings/{id}/cancel(id=${b.id})}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đặt phòng này?');">
                                 <button type="submit" class="btn btn-sm btn-outline-danger fw-bold shadow-sm">Hủy đơn</button>
                             </form>
+<<<<<<< HEAD
                             <span th:if="${b.status != 'PENDING'}" class="text-muted small">Không khả dụng</span>
+=======
+                            <a th:if="${b.status == 'CHECKED_OUT'}" th:href="@{/customer/reviews/create(bookingId=${b.id})}" class="btn btn-sm btn-outline-primary fw-bold shadow-sm">Đánh giá</a>
+                            <span th:if="${b.status != 'PENDING' and b.status != 'CHECKED_OUT'}" class="text-muted small">Không khả dụng</span>
+>>>>>>> feature/huan
                         </td>
                     </tr>
                     <tr th:if="${bookings.empty}">

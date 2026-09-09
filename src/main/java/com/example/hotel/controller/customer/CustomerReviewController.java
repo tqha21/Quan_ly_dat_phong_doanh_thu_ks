@@ -40,8 +40,16 @@ public class CustomerReviewController {
         }
 
         if (!"CHECKED_OUT".equals(booking.getStatus())) {
+<<<<<<< HEAD
             model.addAttribute("errorMessage", "Bạn chỉ có thể đánh giá phòng sau khi đã trả phòng.");
             return "customer/error-page"; // Or redirect back
+=======
+            return "redirect:/customer/bookings/history?reviewError=notCheckedOut";
+        }
+
+        if (reviewRepository.existsByBooking_IdAndCustomer_Id(bookingId, customer.getId())) {
+            return "redirect:/customer/bookings/history?reviewError=alreadyReviewed";
+>>>>>>> feature/huan
         }
 
         model.addAttribute("booking", booking);
@@ -70,6 +78,18 @@ public class CustomerReviewController {
             return "redirect:/customer/reviews/create?bookingId=" + bookingId;
         }
 
+<<<<<<< HEAD
+=======
+        if (rating < 1 || rating > 5 || comment == null || comment.isBlank()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Điểm đánh giá phải từ 1 đến 5 và nhận xét không được để trống.");
+            return "redirect:/customer/reviews/create?bookingId=" + bookingId;
+        }
+        if (reviewRepository.existsByBooking_IdAndCustomer_Id(bookingId, customer.getId())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đơn đặt phòng này đã được đánh giá.");
+            return "redirect:/customer/bookings/history";
+        }
+
+>>>>>>> feature/huan
         Review review = new Review();
         review.setId("RV" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         review.setBooking(booking);

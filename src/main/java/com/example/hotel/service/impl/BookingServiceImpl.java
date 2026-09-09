@@ -4,13 +4,25 @@ import com.example.hotel.dto.BookingDTO;
 import com.example.hotel.dto.BookingRequest;
 import com.example.hotel.entity.Booking;
 import com.example.hotel.entity.BookingDetail;
+<<<<<<< HEAD
+=======
+import com.example.hotel.entity.BookingServiceDetail;
+import com.example.hotel.entity.HotelService;
+>>>>>>> feature/huan
 import com.example.hotel.entity.Room;
 import com.example.hotel.entity.User;
 import com.example.hotel.repository.BookingDetailRepository;
 import com.example.hotel.repository.BookingRepository;
 import com.example.hotel.repository.RoomRepository;
+<<<<<<< HEAD
 import com.example.hotel.repository.UserRepository;
 import com.example.hotel.service.BookingService;
+=======
+import com.example.hotel.repository.HotelServiceRepository;
+import com.example.hotel.repository.UserRepository;
+import com.example.hotel.service.BookingService;
+import com.example.hotel.service.EmailService;
+>>>>>>> feature/huan
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +42,11 @@ public class BookingServiceImpl implements BookingService {
     private final BookingDetailRepository bookingDetailRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+<<<<<<< HEAD
+=======
+    private final HotelServiceRepository hotelServiceRepository;
+    private final EmailService emailService;
+>>>>>>> feature/huan
 
     @Override
     @Transactional
@@ -79,6 +96,32 @@ public class BookingServiceImpl implements BookingService {
         detail.setSubtotal(totalAmount);
         bookingDetailRepository.save(detail);
 
+<<<<<<< HEAD
+=======
+        if (request.getServiceQuantities() != null) {
+            for (var serviceEntry : request.getServiceQuantities().entrySet()) {
+                String serviceId = serviceEntry.getKey();
+                Integer quantity = serviceEntry.getValue();
+                if (quantity == null || quantity <= 0) continue;
+                HotelService hotelService = hotelServiceRepository.findById(serviceId)
+                        .filter(service -> "ACTIVE".equals(service.getStatus()))
+                        .orElseThrow(() -> new IllegalArgumentException("Dịch vụ không tồn tại hoặc đã ngừng cung cấp."));
+                BookingServiceDetail serviceDetail = new BookingServiceDetail();
+                serviceDetail.setId("BS" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+                serviceDetail.setBooking(booking);
+                serviceDetail.setHotelService(hotelService);
+                serviceDetail.setQuantity(quantity);
+                serviceDetail.setPrice(hotelService.getPrice());
+                serviceDetail.setSubtotal(hotelService.getPrice().multiply(BigDecimal.valueOf(quantity)));
+                booking.getBookingServices().add(serviceDetail);
+                totalAmount = totalAmount.add(serviceDetail.getSubtotal());
+            }
+        }
+        booking.setTotalAmount(totalAmount);
+        bookingRepository.save(booking);
+        emailService.sendBookingConfirmation(booking);
+
+>>>>>>> feature/huan
         return mapToDTO(booking);
     }
 

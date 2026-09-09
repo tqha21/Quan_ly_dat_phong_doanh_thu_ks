@@ -8,6 +8,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+<<<<<<< HEAD
+=======
+import java.util.ArrayList;
+>>>>>>> feature/huan
 import java.util.List;
 
 @Entity
@@ -54,7 +58,11 @@ public class Booking {
     private List<BookingDetail> bookingDetails;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+<<<<<<< HEAD
     private List<BookingServiceDetail> bookingServices;
+=======
+    private List<BookingServiceDetail> bookingServices = new ArrayList<>();
+>>>>>>> feature/huan
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> payments;

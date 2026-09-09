@@ -4,6 +4,10 @@ import com.example.hotel.dto.BookingRequest;
 import com.example.hotel.dto.RoomDTO;
 import com.example.hotel.service.BookingService;
 import com.example.hotel.service.RoomService;
+<<<<<<< HEAD
+=======
+import com.example.hotel.repository.HotelServiceRepository;
+>>>>>>> feature/huan
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -21,6 +25,10 @@ public class CustomerBookingController {
 
     private final BookingService bookingService;
     private final RoomService roomService;
+<<<<<<< HEAD
+=======
+    private final HotelServiceRepository hotelServiceRepository;
+>>>>>>> feature/huan
 
     @GetMapping("/create")
     public String showBookingForm(@RequestParam String roomId,
@@ -35,6 +43,10 @@ public class CustomerBookingController {
         request.setCheckOutDate(java.time.LocalDate.parse(checkOut));
 
         model.addAttribute("room", room);
+<<<<<<< HEAD
+=======
+        model.addAttribute("services", hotelServiceRepository.findByStatus("ACTIVE"));
+>>>>>>> feature/huan
         model.addAttribute("bookingRequest", request);
         return "customer/booking-form";
     }
@@ -46,6 +58,10 @@ public class CustomerBookingController {
                                 Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("room", roomService.getRoomById(request.getRoomId()));
+<<<<<<< HEAD
+=======
+            model.addAttribute("services", hotelServiceRepository.findByStatus("ACTIVE"));
+>>>>>>> feature/huan
             return "customer/booking-form";
         }
 
@@ -55,6 +71,10 @@ public class CustomerBookingController {
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("room", roomService.getRoomById(request.getRoomId()));
+<<<<<<< HEAD
+=======
+            model.addAttribute("services", hotelServiceRepository.findByStatus("ACTIVE"));
+>>>>>>> feature/huan
             return "customer/booking-form";
         }
     }
