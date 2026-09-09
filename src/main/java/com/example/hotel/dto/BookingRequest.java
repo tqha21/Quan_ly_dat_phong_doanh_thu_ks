@@ -21,4 +21,6 @@ public class BookingRequest {
     private LocalDate checkOutDate;
 
     private String note;
+    
+    private java.util.List<String> serviceIds;
 }

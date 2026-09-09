@@ -11,4 +11,6 @@ public class RoomSearchRequest {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkOut;
+
+    private String destination;
 }

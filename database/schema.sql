@@ -98,6 +98,9 @@ CREATE TABLE payments (
     payment_status VARCHAR(30) DEFAULT 'PENDING',
     transaction_code VARCHAR(100),
     paid_at DATETIME,
+    tax_code VARCHAR(50),
+    company_name VARCHAR(200),
+    invoice_status VARCHAR(20),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (booking_id) REFERENCES bookings(id)
 );
@@ -138,6 +141,48 @@ CREATE TABLE reviews (
     FOREIGN KEY (booking_id) REFERENCES bookings(id),
     FOREIGN KEY (customer_id) REFERENCES users(id),
     FOREIGN KEY (room_id) REFERENCES rooms(id)
+);
+
+-- 12. promotions
+CREATE TABLE promotions (
+    id VARCHAR(255) PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(200) NOT NULL,
+    discount_percentage DECIMAL(5,2),
+    discount_amount DECIMAL(15,2),
+    usage_limit INT,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status VARCHAR(20) DEFAULT 'ACTIVE',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- 13. amenities
+CREATE TABLE amenities (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    icon VARCHAR(50)
+);
+
+-- 14. room_type_amenities
+CREATE TABLE room_type_amenities (
+    room_type_id VARCHAR(10) NOT NULL,
+    amenity_id VARCHAR(255) NOT NULL,
+    PRIMARY KEY (room_type_id, amenity_id),
+    FOREIGN KEY (room_type_id) REFERENCES room_types(id),
+    FOREIGN KEY (amenity_id) REFERENCES amenities(id)
+);
+
+-- 15. notifications
+CREATE TABLE notifications (
+    id VARCHAR(255) PRIMARY KEY,
+    user_id VARCHAR(10) NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- INSERT SEED DATA FOR ROLES

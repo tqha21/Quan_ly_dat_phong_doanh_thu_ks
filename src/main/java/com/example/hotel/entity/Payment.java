@@ -36,6 +36,15 @@ public class Payment {
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
 
+    @Column(name = "tax_code", length = 50)
+    private String taxCode;
+
+    @Column(name = "company_name", length = 200)
+    private String companyName;
+
+    @Column(name = "invoice_status", length = 20)
+    private String invoiceStatus;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

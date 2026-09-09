@@ -47,4 +47,12 @@ public class RoomType {
 
     @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL)
     private List<Room> rooms;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "room_type_amenities",
+        joinColumns = @JoinColumn(name = "room_type_id"),
+        inverseJoinColumns = @JoinColumn(name = "amenity_id")
+    )
+    private List<Amenity> amenities;
 }

@@ -2,8 +2,10 @@ package com.example.hotel.repository;
 
 import com.example.hotel.entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import jakarta.persistence.LockModeType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +21,7 @@ public interface RoomRepository extends JpaRepository<Room, String> {
      * KHÔNG NẰM TRONG danh sách các phòng đã được đặt (booking không bị hủy/check-out)
      * có khoảng thời gian [checkIn, checkOut] giao nhau (overlap) với ngày khách yêu cầu.
      */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT r FROM Room r WHERE r.status = 'AVAILABLE' AND r.id NOT IN (" +
            "SELECT bd.room.id FROM BookingDetail bd JOIN bd.booking b " +
            "WHERE b.status NOT IN ('CANCELLED', 'CHECKED_OUT') " +
@@ -29,6 +32,7 @@ public interface RoomRepository extends JpaRepository<Room, String> {
      * Truy vấn kiểm tra cụ thể 1 danh sách ID phòng có trống trong khoảng thời gian hay không
      * Trả về danh sách ID các phòng BỊ TRÙNG LỊCH (để ném Exception nếu danh sách này > 0).
      */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT bd.room.id FROM BookingDetail bd JOIN bd.booking b " +
            "WHERE bd.room.id IN :roomIds " +
            "AND b.status NOT IN ('CANCELLED', 'CHECKED_OUT') " +

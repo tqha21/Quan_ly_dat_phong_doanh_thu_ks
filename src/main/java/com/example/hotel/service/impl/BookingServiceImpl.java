@@ -6,8 +6,12 @@ import com.example.hotel.entity.Booking;
 import com.example.hotel.entity.BookingDetail;
 import com.example.hotel.entity.Room;
 import com.example.hotel.entity.User;
+import com.example.hotel.entity.HotelService;
+import com.example.hotel.entity.BookingServiceDetail;
 import com.example.hotel.repository.BookingDetailRepository;
 import com.example.hotel.repository.BookingRepository;
+import com.example.hotel.repository.BookingServiceDetailRepository;
+import com.example.hotel.repository.HotelServiceRepository;
 import com.example.hotel.repository.RoomRepository;
 import com.example.hotel.repository.UserRepository;
 import com.example.hotel.service.BookingService;
@@ -28,6 +32,8 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private final BookingDetailRepository bookingDetailRepository;
+    private final BookingServiceDetailRepository bookingServiceDetailRepository;
+    private final HotelServiceRepository hotelServiceRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
 
@@ -49,13 +55,25 @@ public class BookingServiceImpl implements BookingService {
                 Collections.singletonList(room.getId()), request.getCheckInDate(), request.getCheckOutDate()
         );
         if (!conflicts.isEmpty()) {
-            throw new RuntimeException("Xin lỗi, phòng này vừa được người khác đặt trong khoảng thời gian bạn chọn.");
+            throw new org.springframework.orm.ObjectOptimisticLockingFailureException(Room.class, room.getId());
         }
 
         // Tính tiền = số đêm * giá phòng
         long nights = ChronoUnit.DAYS.between(request.getCheckInDate(), request.getCheckOutDate());
         BigDecimal pricePerNight = room.getRoomType().getPrice();
-        BigDecimal totalAmount = pricePerNight.multiply(new BigDecimal(nights));
+        BigDecimal roomTotal = pricePerNight.multiply(new BigDecimal(nights));
+        
+        // Tính tiền dịch vụ
+        BigDecimal servicesTotal = BigDecimal.ZERO;
+        List<HotelService> selectedServices = null;
+        if (request.getServiceIds() != null && !request.getServiceIds().isEmpty()) {
+            selectedServices = hotelServiceRepository.findAllById(request.getServiceIds());
+            for (HotelService hs : selectedServices) {
+                servicesTotal = servicesTotal.add(hs.getPrice());
+            }
+        }
+        
+        BigDecimal totalAmount = roomTotal.add(servicesTotal);
 
         // Lưu thông tin Booking
         Booking booking = new Booking();
@@ -76,8 +94,22 @@ public class BookingServiceImpl implements BookingService {
         detail.setRoom(room);
         detail.setPrice(pricePerNight);
         detail.setQuantity(1);
-        detail.setSubtotal(totalAmount);
+        detail.setSubtotal(roomTotal);
         bookingDetailRepository.save(detail);
+
+        // Lưu thông tin Booking Service Detail
+        if (selectedServices != null) {
+            for (HotelService hs : selectedServices) {
+                BookingServiceDetail bsd = new BookingServiceDetail();
+                bsd.setId("BS" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+                bsd.setBooking(booking);
+                bsd.setHotelService(hs);
+                bsd.setQuantity(1);
+                bsd.setPrice(hs.getPrice());
+                bsd.setSubtotal(hs.getPrice());
+                bookingServiceDetailRepository.save(bsd);
+            }
+        }
 
         return mapToDTO(booking);
     }

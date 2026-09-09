@@ -1,20 +1,138 @@
-<footer th:fragment="footer" class="bg-dark text-white pt-5 pb-4 mt-5 border-top border-secondary">
-    <div class="container text-center text-md-start">
-        <div class="row text-center text-md-start">
-            <div class="col-md-5 mx-auto mb-4">
-                <h5 class="text-uppercase fw-bold mb-4" style="color: #667eea; letter-spacing: 2px;">LUXURY HOTEL</h5>
-                <p class="text-muted">Đồ án môn Công nghệ Java (CNJ46). Khách sạn 5 sao mang đến trải nghiệm nghỉ dưỡng hoàn hảo và đẳng cấp bậc nhất tại Việt Nam.</p>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="stayora-footer">
+    <div class="footer-main">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <span class="logo-icon">🏨</span>
+                    <span class="logo-text">HTD<span class="logo-accent">Hotel</span></span>
+                </div>
+                <p class="footer-tagline">Nâng tầm tiêu chuẩn khách sạn với thiết kế thông minh và dịch vụ vượt trội.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-btn" title="Facebook">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </a>
+                    <a href="#" class="social-btn" title="Twitter">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+                    </a>
+                    <a href="#" class="social-btn" title="Instagram">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                </div>
             </div>
-            <div class="col-md-4 mx-auto mb-4">
-                <h5 class="text-uppercase fw-bold text-light mb-4">Liên hệ với chúng tôi</h5>
-                <p class="text-muted"><i class="bi bi-house-door-fill me-2 text-primary"></i> 123 Đường Công Nghệ, Hà Nội</p>
-                <p class="text-muted"><i class="bi bi-envelope-fill me-2 text-primary"></i> contact@luxuryhotel.com</p>
-                <p class="text-muted"><i class="bi bi-telephone-fill me-2 text-primary"></i> +84 90 123 4567</p>
+
+            <div class="footer-col">
+                <h4 class="footer-col-title">Khám phá</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Điểm đến</a></li>
+                    <li><a href="#">Ưu đãi đặc biệt</a></li>
+                    <li><a href="#">Trải nghiệm</a></li>
+                    <li><a href="#">Khách sạn nổi bật</a></li>
+                </ul>
             </div>
-        </div>
-        <hr class="mb-4 border-secondary">
-        <div class="text-center text-muted">
-            <p class="mb-0">© 2026 Bản quyền thuộc về Hệ thống Quản lý Đặt phòng Khách sạn.</p>
+
+            <div class="footer-col">
+                <h4 class="footer-col-title">Pháp lý</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Điều khoản dịch vụ</a></li>
+                    <li><a href="#">Chính sách cookie</a></li>
+                    <li><a href="#">Điều khoản đặt phòng</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-col-title">Kết nối</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Liên hệ chúng tôi</a></li>
+                    <li><a href="#">Sơ đồ trang web</a></li>
+                    <li><a href="#">Hỗ trợ khách hàng</a></li>
+                    <li><a href="#">Tuyển dụng</a></li>
+                </ul>
+            </div>
         </div>
     </div>
+
+    <div class="footer-bottom">
+        <div class="footer-bottom-inner">
+            <p class="footer-copyright">© 2026 HTD Hotel Hospitality Group. Bảo lưu mọi quyền.</p>
+            <div class="footer-badges">
+                <span class="footer-badge">🇻🇳 Tiếng Việt</span>
+                <span class="footer-badge">₫ VND</span>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .stayora-footer {
+            background: #1a2332;
+            color: #fff;
+            margin-top: 80px;
+        }
+        .footer-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 56px 24px 40px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+        }
+        .footer-logo {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 16px;
+        }
+        .footer-logo .logo-icon { font-size: 22px; }
+        .footer-logo .logo-text { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+        .footer-logo .logo-accent { color: #60a5fa; }
+        .footer-tagline { color: #9ca3af; font-size: 13px; line-height: 1.6; max-width: 260px; margin-bottom: 20px; }
+        .footer-social { display: flex; gap: 10px; }
+        .social-btn {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: #9ca3af; text-decoration: none;
+            transition: all 0.2s;
+        }
+        .social-btn:hover { background: #2563eb; color: #fff; }
+        .footer-col-title {
+            font-size: 13px; font-weight: 700;
+            color: #fff; letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .footer-links { list-style: none; padding: 0; margin: 0; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a {
+            text-decoration: none; color: #9ca3af;
+            font-size: 14px; transition: color 0.2s;
+        }
+        .footer-links a:hover { color: #60a5fa; }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .footer-bottom-inner {
+            max-width: 1200px; margin: 0 auto;
+            padding: 20px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .footer-copyright { color: #6b7280; font-size: 13px; margin: 0; }
+        .footer-badges { display: flex; gap: 8px; }
+        .footer-badge {
+            background: rgba(255,255,255,0.08);
+            color: #9ca3af;
+            font-size: 12px; font-weight: 500;
+            padding: 4px 10px; border-radius: 6px;
+        }
+        @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+            .footer-bottom-inner { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
 </footer>
+</body>
+</html>

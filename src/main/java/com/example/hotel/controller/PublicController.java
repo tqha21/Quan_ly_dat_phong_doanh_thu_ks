@@ -60,6 +60,21 @@ public class PublicController {
         return "403";
     }
 
+    @GetMapping("/offers")
+    public String offers() {
+        return "customer/offers";
+    }
+
+    @GetMapping("/experience")
+    public String experience() {
+        return "customer/experience";
+    }
+
+    @GetMapping("/about")
+    public String about() {
+        return "customer/about";
+    }
+
     @GetMapping("/debug/users")
     @org.springframework.web.bind.annotation.ResponseBody
     public java.util.List<com.example.hotel.entity.User> debugUsers(com.example.hotel.repository.UserRepository userRepo) {

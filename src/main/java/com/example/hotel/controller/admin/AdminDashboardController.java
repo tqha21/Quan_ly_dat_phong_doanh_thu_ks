@@ -23,6 +23,7 @@ public class AdminDashboardController {
     private final RoomRepository roomRepository;
     private final BookingRepository bookingRepository;
     private final PaymentRepository paymentRepository;
+    private final com.example.hotel.service.BookingService bookingService;
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -45,6 +46,10 @@ public class AdminDashboardController {
         model.addAttribute("pendingBookings", pendingBookings);
         model.addAttribute("checkedInBookings", checkedInBookings);
         model.addAttribute("monthlyRevenue", monthlyRevenue);
+        
+        java.util.List<com.example.hotel.dto.BookingDTO> allBookings = bookingService.getAllBookings();
+        java.util.List<com.example.hotel.dto.BookingDTO> recentBookings = allBookings.size() > 5 ? allBookings.subList(0, 5) : allBookings;
+        model.addAttribute("recentBookings", recentBookings);
         
         return "admin/dashboard";
     }

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trải nghiệm & Tiện ích | HTD Hotel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #fff; color: #1a2332; line-height: 1.5; }
+
+        /* HERO */
+        .exp-hero {
+            position: relative; height: 500px;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+        }
+        .exp-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=80') center/cover;
+            filter: brightness(0.5); z-index: -1;
+        }
+        .exp-hero-content { color: #fff; max-width: 800px; padding: 24px; }
+        .exp-hero-title { font-size: 48px; font-weight: 800; margin-bottom: 16px; letter-spacing: -1px; }
+        .exp-hero-desc { font-size: 18px; color: rgba(255,255,255,0.9); }
+
+        /* CONTAINER */
+        .container { max-width: 1200px; margin: 0 auto; padding: 80px 24px; }
+
+        /* FEATURE ROW */
+        .feature-row {
+            display: flex; align-items: center; gap: 60px; margin-bottom: 80px;
+        }
+        .feature-row:nth-child(even) { flex-direction: row-reverse; }
+        .feature-img-wrap { flex: 1; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .feature-img-wrap img { width: 100%; height: 400px; object-fit: cover; display: block; transition: transform 0.5s; }
+        .feature-img-wrap:hover img { transform: scale(1.05); }
+        .feature-text { flex: 1; }
+        
+        .feature-tag { 
+            color: #2563eb; font-size: 13px; font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; 
+        }
+        .feature-title { font-size: 32px; font-weight: 800; color: #1a2332; margin-bottom: 20px; line-height: 1.2; }
+        .feature-desc { font-size: 16px; color: #4b5563; line-height: 1.7; margin-bottom: 24px; }
+        
+        .feature-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .feature-list li { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: #1a2332; }
+        .feature-list li svg { color: #2563eb; }
+
+        @media (max-width: 768px) {
+            .feature-row, .feature-row:nth-child(even) { flex-direction: column; gap: 40px; }
+            .feature-img-wrap img { height: 280px; }
+            .exp-hero-title { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="exp-hero">
+    <div class="exp-hero-content">
+        <h1 class="exp-hero-title">Đánh thức mọi giác quan</h1>
+        <p class="exp-hero-desc">Trải nghiệm những tiện ích đẳng cấp quốc tế, mang đến cho bạn một kỳ nghỉ thư giãn và đáng nhớ tại HTD Hotel.</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Feature 1 -->
+    <div class="feature-row">
+        <div class="feature-img-wrap">
+            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80" alt="Spa & Massage">
+        </div>
+        <div class="feature-text">
+            <span class="feature-tag">Thư giãn</span>
+            <h2 class="feature-title">Oasis Spa & Wellness</h2>
+            <p class="feature-desc">Tìm lại sự cân bằng giữa cơ thể và tâm trí với các liệu trình massage chuyên sâu từ các chuyên gia trị liệu hàng đầu. Không gian yên tĩnh, hòa mình vào thiên nhiên với hương thơm tinh dầu thảo mộc dịu nhẹ.</p>
+            <ul class="feature-list">
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Trị liệu đá nóng</li>
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Xông hơi ướt & khô</li>
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Massage kiểu Thái</li>
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Bể sục Jacuzzi</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Feature 2 -->
+    <div class="feature-row">
+        <div class="feature-img-wrap">
+            <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&q=80" alt="Ẩm thực">
+        </div>
+        <div class="feature-text">
+            <span class="feature-tag">Ẩm thực tinh hoa</span>
+            <h2 class="feature-title">Nhà Hàng The Ocean</h2>
+            <p class="feature-desc">Đánh thức vị giác của bạn với thực đơn đa dạng từ các nền ẩm thực Á - Âu. Tận hưởng bữa sáng buffet phong phú và bữa tối lãng mạn dưới ánh nến với tầm nhìn ôm trọn bờ biển tuyệt đẹp.</p>
+            <ul class="feature-list">
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Bếp trưởng Michelin</li>
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Thực đơn chay phong phú</li>
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Hải sản đánh bắt trong ngày</li>
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Rượu vang thượng hạng</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Feature 3 -->
+    <div class="feature-row">
+        <div class="feature-img-wrap">
+            <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=800&q=80" alt="Hồ bơi vô cực">
+        </div>
+        <div class="feature-text">
+            <span class="feature-tag">Tiện ích</span>
+            <h2 class="feature-title">Hồ Bơi Vô Cực Trên Cao</h2>
+            <p class="feature-desc">Đắm mình trong làn nước trong xanh mát lạnh tại hồ bơi vô cực tọa lạc trên tầng thượng. Nhâm nhi ly cocktail mát lạnh từ quầy bar bên hồ bơi và ngắm nhìn quang cảnh thành phố lung linh khi đêm về.</p>
+            <ul class="feature-list">
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Hồ bơi nước mặn</li>
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Khu vực cho trẻ em</li>
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Sky Bar phục vụ đồ uống</li>
+                <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Ghế tắm nắng Sunbed</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+    document.getElementById('nav-experience').classList.add('active');
+    document.getElementById('nav-home').classList.remove('active');
+</script>
+</body>
+</html>

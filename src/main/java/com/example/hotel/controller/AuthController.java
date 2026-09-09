@@ -46,4 +46,20 @@ public class AuthController {
             return "auth/register";
         }
     }
+
+    @GetMapping("/forgot-password")
+    public String showForgotPasswordPage() {
+        return "auth/forgot-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String processForgotPassword(@org.springframework.web.bind.annotation.RequestParam("email") String email, Model model) {
+        try {
+            String newPassword = authService.resetPassword(email);
+            model.addAttribute("successMessage", "Mật khẩu mới đã được gửi tới email của bạn. (Mật khẩu: " + newPassword + ")");
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+        return "auth/forgot-password";
+    }
 }

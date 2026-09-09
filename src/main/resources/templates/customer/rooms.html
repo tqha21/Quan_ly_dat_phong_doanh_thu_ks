@@ -2,228 +2,594 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Hà Nội – khách sạn và chỗ nghỉ khác</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${(searchRequest.destination != null && !searchRequest.destination.isEmpty() ? searchRequest.destination + ' — ' : '') + 'Tìm kiếm phòng | HTD Hotel'}">Tìm kiếm | HTD Hotel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #ffffff; color: #262626;}
-        
-        /* Search Bar in Header */
-        .search-bar-container { background-color: #003b95; padding-bottom: 20px; }
-        .search-form { background-color: #febb02; padding: 4px; border-radius: 8px; display: flex; gap: 4px; }
-        .search-input-group { background: white; padding: 10px 15px; border-radius: 4px; display: flex; align-items: center; gap: 10px; flex: 1; }
-        .search-input-group input { border: none; outline: none; width: 100%; font-weight: 500; font-size: 14px;}
-        .search-input-group i { color: #262626; font-size: 20px; }
-        .btn-search-submit { background-color: #0071c2; color: white; border: none; border-radius: 4px; padding: 0 32px; font-weight: bold; font-size: 16px; }
-        .btn-search-submit:hover { background-color: #005999; color: white;}
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #f5f7fa; color: #1a2332; }
 
-        /* Breadcrumb & Header */
-        .breadcrumb { font-size: 12px; margin-top: 20px; margin-bottom: 10px; }
-        .breadcrumb a { color: #0071c2; text-decoration: none; }
-        .breadcrumb a:hover { text-decoration: underline; }
-        .breadcrumb-item + .breadcrumb-item::before { content: ">"; }
-        .page-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+        /* TOP SEARCH BAR */
+        .search-topbar {
+            background: #0f1f3d;
+            padding: 16px 0;
+            overflow: visible; /* ensure popover isn't clipped */
+        }
+        .search-topbar-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; gap: 12px; align-items: center;
+        }
+        .stb-field {
+            flex: 1; background: #fff;
+            border-radius: 10px; padding: 10px 14px;
+            display: flex; align-items: center; gap: 8px;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .stb-field:focus-within { border-color: #60a5fa; }
+        .stb-field svg { color: #9ca3af; flex-shrink: 0; }
+        .stb-field input {
+            border: none; outline: none; font-size: 14px; font-weight: 500;
+            color: #1a2332; background: transparent; width: 100%;
+        }
+        .stb-field input::placeholder { color: #9ca3af; }
+        .stb-divider { color: rgba(255,255,255,0.3); font-size: 18px; }
+        .stb-btn {
+            background: #2563eb; color: #fff;
+            border: none; border-radius: 10px;
+            padding: 11px 24px; font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: background 0.2s;
+            display: flex; align-items: center; gap: 6px; white-space: nowrap;
+        }
+        .stb-btn:hover { background: #1d4ed8; }
 
-        /* Sidebar Map */
-        .map-container { border: 1px solid #e7e7e7; border-radius: 8px; overflow: hidden; margin-bottom: 20px; position: relative; height: 150px; background: url('https://cf.bstatic.com/static/img/map/map-entry-point/5b3597c271b059345b85a3d463d115e589865f37.png') center/cover; display: flex; align-items: center; justify-content: center;}
-        .btn-show-map { background-color: #0071c2; color: white; border: none; padding: 8px 16px; font-weight: bold; font-size: 14px; border-radius: 4px; }
-        .btn-show-map:hover { background-color: #005999; color: white;}
+        .stb-btn:hover { background: #1d4ed8; }
 
-        /* Sidebar Filters */
-        .filter-box { border: 1px solid #e7e7e7; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
-        .filter-title { font-weight: bold; font-size: 16px; margin-bottom: 15px; }
-        .filter-section-title { font-weight: bold; font-size: 14px; margin-bottom: 10px; margin-top: 15px; }
-        .filter-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 14px;}
-        .filter-item input[type="checkbox"] { width: 16px; height: 16px; border: 1px solid #8f8f8f; border-radius: 2px; }
-        
-        .star-badge { border: 1px solid #8f8f8f; border-radius: 12px; padding: 4px 12px; font-size: 14px; display: inline-block; margin-bottom: 8px; background: white;}
-        
-        /* Sorting Tabs */
-        .sort-tabs { display: flex; border: 1px solid #e7e7e7; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
-        .sort-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; font-weight: bold; cursor: pointer; border-right: 1px solid #e7e7e7; background: white; color: #0071c2; transition: 0.2s;}
-        .sort-tab:last-child { border-right: none; }
-        .sort-tab.active { background-color: #0071c2; color: white; }
-        .sort-tab:hover:not(.active) { background-color: #f2f2f2; }
+        /* ===== GUEST POPOVER ===== */
+        .guest-popover {
+            position: absolute; top: calc(100% + 10px); right: 0;
+            background: #fff; border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 20px; width: 300px; z-index: 1000;
+            display: none; flex-direction: column; gap: 16px;
+        }
+        .guest-popover.active { display: flex; }
+        .guest-row { display: flex; justify-content: space-between; align-items: center; }
+        .guest-row-text .g-title { font-size: 14px; font-weight: 700; color: #1a2332; }
+        .guest-row-text .g-desc { font-size: 12px; color: #6b7280; }
+        .guest-controls { display: flex; align-items: center; gap: 12px; }
+        .guest-btn {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 1px solid #e5e7eb; background: #fff;
+            color: #2563eb; font-size: 18px; line-height: 1;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .guest-btn:disabled { color: #9ca3af; border-color: #f3f4f6; cursor: not-allowed; }
+        .guest-count { font-size: 14px; font-weight: 600; width: 20px; text-align: center; }
 
-        /* Room Card */
-        .room-card { border: 1px solid #e7e7e7; border-radius: 8px; padding: 16px; display: flex; gap: 16px; margin-bottom: 16px; background: white;}
-        .room-image { width: 200px; height: 200px; object-fit: cover; border-radius: 4px; }
-        .room-details { flex: 1; display: flex; flex-direction: column; }
-        
-        .room-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .room-title { font-size: 20px; font-weight: bold; color: #0071c2; margin: 0; display: flex; align-items: center; gap: 5px; }
-        .room-stars i { color: #febb02; font-size: 12px; }
-        
-        .room-location { font-size: 12px; color: #0071c2; margin-bottom: 10px; text-decoration: underline; cursor: pointer; }
-        .room-location span { color: #262626; text-decoration: none;}
-        
-        .room-desc { font-size: 12px; line-height: 1.5; color: #262626; border-left: 2px solid #e7e7e7; padding-left: 10px; margin-bottom: 10px; max-width: 400px;}
-        
-        .score-container { display: flex; gap: 8px; align-items: center; text-align: right;}
-        .score-text { display: flex; flex-direction: column; }
-        .score-word { font-weight: bold; font-size: 16px; color: #262626; }
-        .score-count { font-size: 12px; color: #6b6b6b; }
-        .score-badge { background-color: #003b95; color: white; font-weight: bold; font-size: 16px; padding: 6px 8px; border-radius: 6px; display: flex; align-items: center; justify-content: center; min-width: 32px;}
+        /* LAYOUT */
+        .page-layout {
+            max-width: 1200px; margin: 0 auto;
+            padding: 24px 24px;
+            display: grid; grid-template-columns: 260px 1fr; gap: 24px;
+        }
 
-        .price-section { text-align: right; margin-top: auto; }
-        .price-label { font-size: 12px; color: #6b6b6b; margin-bottom: 2px; }
-        .price-value { font-size: 22px; font-weight: bold; color: #262626; }
-        .price-info { font-size: 12px; color: #6b6b6b; margin-bottom: 10px; }
-        
-        .btn-check-avail { background-color: #0071c2; color: white; border: none; font-weight: bold; font-size: 14px; padding: 8px 16px; border-radius: 4px; }
-        .btn-check-avail:hover { background-color: #005999; color: white;}
+        /* FILTER SIDEBAR */
+        .filter-sidebar { }
+        .filter-card {
+            background: #fff; border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden; margin-bottom: 16px;
+        }
+        .filter-card-title {
+            font-size: 14px; font-weight: 700; color: #1a2332;
+            padding: 16px 20px 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .filter-section { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; }
+        .filter-section:last-child { border-bottom: none; }
+        .filter-sec-label {
+            font-size: 12px; font-weight: 700; color: #6b7280;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        .filter-range { display: flex; gap: 8px; align-items: center; }
+        .filter-range input {
+            flex: 1; padding: 8px 10px;
+            border: 1.5px solid #e5e7eb; border-radius: 8px;
+            font-size: 13px; outline: none; color: #1a2332;
+            transition: border-color 0.2s;
+        }
+        .filter-range input:focus { border-color: #2563eb; }
+        .filter-range-sep { color: #9ca3af; font-size: 13px; }
+        .filter-check {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 10px; cursor: pointer;
+        }
+        .filter-check input[type="checkbox"] {
+            width: 16px; height: 16px; accent-color: #2563eb;
+            cursor: pointer;
+        }
+        .filter-check-label { font-size: 13.5px; color: #374151; font-weight: 500; }
+
+        /* RESULTS AREA */
+        .results-area { }
+        .results-header {
+            background: #0f1f3d; border-radius: 12px;
+            padding: 16px 20px; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .results-header svg { color: #60a5fa; flex-shrink: 0; }
+        .rh-dest { font-size: 14px; font-weight: 700; color: #fff; }
+        .rh-dates { font-size: 13px; color: rgba(255,255,255,0.6); }
+        .rh-sep { color: rgba(255,255,255,0.3); }
+        .rh-guests { font-size: 13px; color: rgba(255,255,255,0.6); }
+        .rh-edit {
+            margin-left: auto; background: rgba(255,255,255,0.15);
+            color: #fff; border: none; border-radius: 8px;
+            padding: 7px 16px; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .rh-edit:hover { background: rgba(255,255,255,0.25); }
+        .results-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+        .results-count { font-size: 22px; font-weight: 800; color: #1a2332; }
+        .results-sub { font-size: 13px; color: #6b7280; margin-top: 2px; }
+        .sort-btn {
+            display: flex; align-items: center; gap: 6px;
+            border: 1.5px solid #e5e7eb; border-radius: 8px;
+            padding: 8px 14px; font-size: 13px; font-weight: 600;
+            color: #374151; background: #fff; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sort-btn:hover { border-color: #2563eb; color: #2563eb; }
+
+        /* ROOM RESULT CARD */
+        .result-card {
+            background: #fff; border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden; margin-bottom: 16px;
+            display: flex;
+            transition: box-shadow 0.25s, transform 0.25s;
+        }
+        .result-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .result-card-img { position: relative; flex-shrink: 0; }
+        .result-card-img img {
+            width: 280px; height: 210px; object-fit: cover;
+            display: block;
+        }
+        .result-fav-btn {
+            position: absolute; top: 12px; right: 12px;
+            width: 34px; height: 34px; background: rgba(255,255,255,0.95);
+            border: none; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #9ca3af; transition: all 0.2s;
+        }
+        .result-fav-btn:hover { color: #ef4444; transform: scale(1.1); }
+        .popular-badge {
+            position: absolute; top: 12px; left: 12px;
+            background: #ef4444; color: #fff;
+            font-size: 11px; font-weight: 700;
+            padding: 4px 10px; border-radius: 6px;
+            text-transform: uppercase; letter-spacing: 0.3px;
+        }
+        .result-card-body {
+            flex: 1; padding: 20px 22px; display: flex; gap: 16px;
+        }
+        .result-info { flex: 1; }
+        .result-name {
+            font-size: 18px; font-weight: 700; color: #1a2332;
+            text-decoration: none; margin-bottom: 6px; display: block;
+            transition: color 0.2s;
+        }
+        .result-name:hover { color: #2563eb; }
+        .result-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+        .result-tag {
+            display: flex; align-items: center; gap: 4px;
+            background: #f0f7ff; color: #2563eb;
+            font-size: 12px; font-weight: 600;
+            padding: 4px 10px; border-radius: 6px;
+        }
+        .result-tag svg { width: 13px; height: 13px; }
+        .result-desc { font-size: 13px; color: #6b7280; line-height: 1.5; margin-bottom: 12px; }
+        .result-cancel { color: #16a34a; font-size: 13px; font-weight: 600; }
+
+        .result-aside { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; min-width: 160px; }
+        .result-rating { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+        .rating-word { font-size: 14px; font-weight: 700; color: #1a2332; }
+        .rating-count { font-size: 12px; color: #6b7280; }
+        .rating-badge {
+            background: #0f1f3d; color: #fff;
+            font-size: 14px; font-weight: 800;
+            padding: 8px 10px; border-radius: 10px 10px 10px 0;
+            min-width: 40px; text-align: center;
+        }
+        .result-price-box { text-align: right; }
+        .price-per-night { font-size: 11px; color: #9ca3af; margin-bottom: 2px; }
+        .price-total { font-size: 22px; font-weight: 800; color: #1a2332; }
+        .price-currency { font-size: 14px; font-weight: 600; color: #6b7280; }
+        .price-tax { font-size: 12px; color: #9ca3af; margin-bottom: 12px; }
+        .btn-reserve {
+            background: #2563eb; color: #fff;
+            border: none; border-radius: 10px;
+            padding: 11px 20px; font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: background 0.2s;
+            white-space: nowrap; text-decoration: none; display: inline-block;
+        }
+        .btn-reserve:hover { background: #1d4ed8; color: #fff; }
+
+        /* EMPTY STATE */
+        .empty-state {
+            background: #fff; border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            padding: 60px 40px; text-align: center;
+        }
+        .empty-icon { font-size: 56px; margin-bottom: 16px; }
+        .empty-title { font-size: 20px; font-weight: 700; color: #1a2332; margin-bottom: 8px; }
+        .empty-desc { font-size: 14px; color: #6b7280; }
+
+        @media (max-width: 900px) {
+            .page-layout { grid-template-columns: 1fr; }
+            .filter-sidebar { display: none; }
+            .result-card-img img { width: 180px; height: 180px; }
+        }
+        @media (max-width: 600px) {
+            .result-card { flex-direction: column; }
+            .result-card-img img { width: 100%; height: 220px; }
+            .result-aside { align-items: flex-start; margin-top: 16px; }
+            .result-rating { justify-content: flex-start; }
+            .result-price-box { text-align: left; }
+        }
     </style>
 </head>
 <body>
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<!-- Search Bar Area -->
-<div class="search-bar-container">
-    <div class="container">
-        <form th:action="@{/rooms}" method="get" th:object="${searchRequest}" class="search-form shadow-sm">
-            <div class="search-input-group">
-                <i class="bi bi-geo-alt"></i>
-                <input type="text" placeholder="Hà Nội" value="Hà Nội" readonly>
+<!-- TOP SEARCH BAR -->
+<div class="search-topbar">
+    <div class="search-topbar-inner">
+        <form th:action="@{/rooms}" method="get" th:object="${searchRequest}" style="display:contents;">
+            <div class="stb-field">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <input type="text" name="destination" th:value="${searchRequest.destination}" placeholder="Điểm đến" id="stb-dest">
             </div>
-            <div class="search-input-group">
-                <i class="bi bi-calendar"></i>
-                <input type="date" th:field="*{checkIn}" required>
-                <span>—</span>
-                <input type="date" th:field="*{checkOut}" required>
+            <div class="stb-divider">|</div>
+            <div class="stb-field">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <input type="date" th:field="*{checkIn}" id="stb-checkin">
             </div>
-            <div class="search-input-group">
-                <i class="bi bi-person"></i>
-                <input type="text" placeholder="2 người lớn · 0 trẻ em · 1 phòng" value="2 người lớn · 0 trẻ em · 1 phòng" readonly>
-                <i class="bi bi-chevron-down" style="font-size: 14px;"></i>
+            <div class="stb-divider">|</div>
+            <div class="stb-field">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <input type="date" th:field="*{checkOut}" id="stb-checkout">
             </div>
-            <button type="submit" class="btn-search-submit">Tìm</button>
+            <div class="stb-divider">|</div>
+            <div class="stb-field" style="position: relative;">
+                <div style="display:flex; align-items:center; gap:8px; width:100%; cursor:pointer;" id="guest-trigger">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    <input type="text" value="2 Khách, 1 Phòng" readonly id="inp-guests" style="cursor:pointer;">
+                </div>
+                <div class="guest-popover" id="guest-popover">
+                    <div class="guest-row">
+                        <div class="guest-row-text">
+                            <div class="g-title">Người lớn</div>
+                            <div class="g-desc">Từ 13 tuổi trở lên</div>
+                        </div>
+                        <div class="guest-controls">
+                            <button type="button" class="guest-btn" id="btn-adult-minus">−</button>
+                            <span class="guest-count" id="count-adult">2</span>
+                            <button type="button" class="guest-btn" id="btn-adult-plus">+</button>
+                        </div>
+                    </div>
+                    <div class="guest-row">
+                        <div class="guest-row-text">
+                            <div class="g-title">Trẻ em</div>
+                            <div class="g-desc">Độ tuổi 0 - 12</div>
+                        </div>
+                        <div class="guest-controls">
+                            <button type="button" class="guest-btn" id="btn-child-minus" disabled>−</button>
+                            <span class="guest-count" id="count-child">0</span>
+                            <button type="button" class="guest-btn" id="btn-child-plus">+</button>
+                        </div>
+                    </div>
+                    <div class="guest-row">
+                        <div class="guest-row-text">
+                            <div class="g-title">Phòng</div>
+                        </div>
+                        <div class="guest-controls">
+                            <button type="button" class="guest-btn" id="btn-room-minus" disabled>−</button>
+                            <span class="guest-count" id="count-room">1</span>
+                            <button type="button" class="guest-btn" id="btn-room-plus">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="stb-btn" id="stb-search">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                Cập nhật
+            </button>
         </form>
     </div>
 </div>
 
-<div class="container">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="#">Khách sạn</a></li>
-            <li class="breadcrumb-item"><a href="#">Việt Nam</a></li>
-            <li class="breadcrumb-item"><a href="#">Hà Nội</a></li>
-            <li class="breadcrumb-item active" aria-current="page" style="color: #262626;">Hà Nội</li>
-        </ol>
-    </nav>
-    
-    <h1 class="page-title">Hà Nội – <span th:text="${rooms.size()}"></span> khách sạn và chỗ nghỉ khác</h1>
-
-    <div class="row">
-        <!-- Sidebar Filters -->
-        <div class="col-lg-3 d-none d-lg-block">
-            <div class="map-container">
-                <button class="btn-show-map"><i class="bi bi-geo-alt-fill me-1"></i> Hiển thị trên bản đồ</button>
+<!-- MAIN CONTENT -->
+<div class="page-layout">
+    <!-- FILTER SIDEBAR -->
+    <aside class="filter-sidebar">
+        <div class="filter-card">
+            <div class="filter-card-title">Bộ lọc tìm kiếm</div>
+            <div class="filter-section">
+                <div class="filter-sec-label">Giá mỗi đêm (VNĐ)</div>
+                <div class="filter-range">
+                    <input type="number" placeholder="Tối thiểu" id="f-price-min">
+                    <span class="filter-range-sep">—</span>
+                    <input type="number" placeholder="Tối đa" id="f-price-max">
+                </div>
             </div>
-            
-            <div class="filter-box">
-                <div class="filter-title">Chọn lọc theo:</div>
-                <hr style="margin: 0 -15px 15px -15px; border-color: #e7e7e7;">
-                
-                <div class="filter-section-title">Xếp hạng sao</div>
-                <div class="d-flex flex-column">
-                    <span class="star-badge">5 sao</span>
-                    <span class="star-badge">4 sao</span>
-                    <span class="star-badge">3 sao</span>
-                    <span class="star-badge">2 sao</span>
-                    <span class="star-badge">1 sao</span>
-                </div>
-                
-                <hr style="margin: 15px -15px; border-color: #e7e7e7;">
-                
-                <div class="filter-section-title">Điểm đánh giá của khách</div>
-                <div class="d-flex flex-column">
-                    <span class="star-badge">Tuyệt hảo: 9 điểm trở lên</span>
-                    <span class="star-badge">Rất tốt: 8 điểm trở lên</span>
-                    <span class="star-badge">Tốt: 7 điểm trở lên</span>
-                    <span class="star-badge">Dễ chịu: 6 điểm trở lên</span>
-                </div>
+            <div class="filter-section">
+                <div class="filter-sec-label">Loại phòng</div>
+                <label class="filter-check"><input type="checkbox" id="f-standard"><span class="filter-check-label">Tiêu chuẩn</span></label>
+                <label class="filter-check"><input type="checkbox" id="f-deluxe" checked><span class="filter-check-label">Deluxe</span></label>
+                <label class="filter-check"><input type="checkbox" id="f-suite" checked><span class="filter-check-label">Suite</span></label>
+                <label class="filter-check"><input type="checkbox" id="f-penthouse"><span class="filter-check-label">Penthouse</span></label>
+            </div>
+            <div class="filter-section">
+                <div class="filter-sec-label">Tiện nghi</div>
+                <label class="filter-check"><input type="checkbox" id="f-wifi" checked><span class="filter-check-label">WiFi miễn phí</span></label>
+                <label class="filter-check"><input type="checkbox" id="f-pool"><span class="filter-check-label">Hồ bơi</span></label>
+                <label class="filter-check"><input type="checkbox" id="f-parking"><span class="filter-check-label">Bãi đỗ xe</span></label>
+                <label class="filter-check"><input type="checkbox" id="f-breakfast"><span class="filter-check-label">Bữa sáng</span></label>
             </div>
         </div>
+    </aside>
 
-        <!-- Main Content -->
-        <div class="col-lg-9">
-            
-            <div class="sort-tabs">
-                <div class="sort-tab active">Lựa chọn hàng đầu của chúng tôi</div>
-                <div class="sort-tab">Ưu tiên giá thấp nhất</div>
-                <div class="sort-tab">Xếp hạng sao và giá</div>
-                <div class="sort-tab">Được đánh giá hàng đầu</div>
+    <!-- RESULTS -->
+    <div class="results-area">
+        <!-- Results header bar -->
+        <div class="results-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="rh-dest" th:text="${searchRequest.destination != null && !searchRequest.destination.isEmpty() ? searchRequest.destination : 'Tất cả địa điểm'}">Địa điểm</span>
+            <span class="rh-sep">|</span>
+            <span class="rh-dates" th:if="${searchRequest.checkIn != null}" th:text="${searchRequest.checkIn + ' → ' + searchRequest.checkOut}"></span>
+            <span class="rh-sep" th:if="${searchRequest.checkIn != null}">|</span>
+            <span class="rh-guests">2 Khách, 1 Phòng</span>
+            <button class="rh-edit" onclick="window.scrollTo(0,0)" id="rh-edit-btn">Chỉnh sửa</button>
+        </div>
+
+        <div class="results-meta">
+            <div>
+                <div class="results-count" th:text="${rooms.size() + ' chỗ nghỉ tìm thấy'}">0 chỗ nghỉ</div>
+                <div class="results-sub" th:text="${'Đang hiển thị kết quả' + (searchRequest.destination != null && !searchRequest.destination.isEmpty() ? ' tại ' + searchRequest.destination : '')}"></div>
             </div>
-            
-            <div th:if="${rooms.empty}" class="alert alert-info border-0 shadow-sm text-center py-4">
-                Không tìm thấy phòng nào trống. Vui lòng thay đổi ngày tìm kiếm.
+            <button class="sort-btn" id="sort-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+                Sắp xếp: Đề xuất
+            </button>
+        </div>
+
+        <!-- Empty state -->
+        <div th:if="${rooms.empty}" class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <div class="empty-title">Không tìm thấy phòng nào</div>
+            <div class="empty-desc">Hãy thử thay đổi ngày hoặc điểm đến để có thêm lựa chọn.</div>
+        </div>
+
+        <!-- Room cards -->
+        <div th:each="r, iterStat : ${rooms}" class="result-card" th:id="'room-result-' + ${r.id}">
+            <div class="result-card-img">
+                <a th:href="@{/rooms/{id}(id=${r.id})}">
+                    <img th:src="${iterStat.index % 4 == 0 ? 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80' : (iterStat.index % 4 == 1 ? 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=600&q=80' : (iterStat.index % 4 == 2 ? 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80' : 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80'))}"
+                         alt="Room image">
+                </a>
+                <button class="result-fav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+                <span th:if="${iterStat.index % 4 == 0}" class="popular-badge">Phổ biến</span>
             </div>
 
-            <!-- Room Loop -->
-            <div class="room-card" th:each="r, iterStat : ${rooms}">
-                <!-- Random nice image from unsplash -->
-                <img th:src="@{${'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80'}}" th:if="${iterStat.index % 3 == 0}" class="room-image" alt="Room Image">
-                <img th:src="@{${'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&q=80'}}" th:if="${iterStat.index % 3 == 1}" class="room-image" alt="Room Image">
-                <img th:src="@{${'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&q=80'}}" th:if="${iterStat.index % 3 == 2}" class="room-image" alt="Room Image">
-                
-                <div class="room-details">
-                    <div class="room-header">
+            <div class="result-card-body">
+                <div class="result-info">
+                    <a th:href="@{/rooms/{id}(id=${r.id})}" class="result-name" th:text="${r.roomTypeName + ' — Phòng ' + r.roomNumber}"></a>
+                    <div class="result-tags">
+                        <span class="result-tag">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+                            WiFi miễn phí
+                        </span>
+                        <span class="result-tag">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                            <span th:text="${'Sức chứa ' + r.capacity + ' người'}"></span>
+                        </span>
+                        <span class="result-tag">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            Smart TV
+                        </span>
+                    </div>
+                    <p class="result-desc" th:text="${r.roomTypeName + ' — Phòng cao cấp với đầy đủ tiện nghi, phù hợp cho ' + r.capacity + ' khách. Thiết kế hiện đại, thoải mái và sang trọng.'}"></p>
+                    <div class="result-cancel">✓ Miễn phí hủy · Không cần thẻ tín dụng</div>
+                </div>
+
+                <div class="result-aside">
+                    <div class="result-rating">
                         <div>
-                            <h3 class="room-title">
-                                <span th:text="${'Phòng ' + r.roomNumber + ' - ' + r.roomTypeName}"></span>
-                                <span class="room-stars">
-                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                                </span>
-                                <span style="background: #febb02; border-radius: 4px; padding: 2px; display: inline-flex;"><i class="bi bi-hand-thumbs-up-fill" style="color: white; font-size: 12px;"></i></span>
-                            </h3>
-                            <div class="room-location">
-                                <i class="bi bi-geo-alt-fill text-primary"></i>
-                                Khách sạn ở Quận Hoàn Kiếm, Hà Nội 
-                                <span><a href="#">Hiển thị trên bản đồ</a></span>
-                            </div>
+                            <div class="rating-word" th:text="${iterStat.index % 2 == 0 ? 'Tuyệt hảo' : 'Rất tốt'}"></div>
+                            <div class="rating-count" th:text="${(iterStat.index * 12 + 42) + ' đánh giá'}"></div>
                         </div>
-                        <div class="score-container">
-                            <div class="score-text">
-                                <span class="score-word" th:text="${iterStat.index % 2 == 0 ? 'Tuyệt hảo' : 'Xuất sắc'}"></span>
-                                <span class="score-count" th:text="${(iterStat.index * 324 + 1219) + ' đánh giá'}"></span>
-                            </div>
-                            <div class="score-badge" th:text="${iterStat.index % 2 == 0 ? '9,2' : '9,6'}"></div>
-                        </div>
+                        <div class="rating-badge" th:text="${iterStat.index % 2 == 0 ? '9,0' : '8,5'}"></div>
                     </div>
-                    
-                    <div class="room-desc">
-                        <strong th:text="${r.roomTypeName}"></strong> có giường thoải mái, tiện nghi hiện đại và Wi-Fi miễn phí. Phù hợp cho <span th:text="${r.capacity}"></span> người lớn.
-                        <br>
-                        <a href="#" style="color: #0071c2; text-decoration: none;">Hiển thị thêm</a>
-                    </div>
-                    
-                    <div class="price-section">
-                        <div class="price-label">Giá từ</div>
-                        <div class="price-value" th:text="${'VND ' + #numbers.formatDecimal(r.price, 0, 'COMMA', 0, 'POINT')}"></div>
-                        <div class="price-info">1 đêm, <span th:text="${r.capacity}"></span> người lớn</div>
-                        
-                        <form th:action="@{/customer/bookings/create}" method="get" class="mt-2">
+                    <div class="result-price-box">
+                        <div class="price-per-night">1 đêm, <span th:text="${r.capacity}"></span> khách</div>
+                        <div class="price-total" th:text="${#numbers.formatDecimal(r.price, 0, 'COMMA', 0, 'POINT')}"></div>
+                        <div class="price-currency">₫/đêm</div>
+                        <div class="price-tax">+ phí &amp; thuế</div>
+                        <form th:action="@{/customer/bookings/create}" method="get">
                             <input type="hidden" name="roomId" th:value="${r.id}">
                             <input type="hidden" name="checkIn" th:value="${searchRequest.checkIn}">
                             <input type="hidden" name="checkOut" th:value="${searchRequest.checkOut}">
-                            <button type="submit" class="btn-check-avail">
-                                Kiểm tra phòng trống <i class="bi bi-chevron-right ms-1"></i>
-                            </button>
+                            <button type="submit" class="btn-reserve" th:id="'btn-reserve-' + ${r.id}">Đặt ngay</button>
                         </form>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
-<div style="background-color: #003b95; color: white; padding: 20px 0; margin-top: 40px; text-align: center; font-size: 14px;">
-    Bản quyền © 2026 Luxury Hotel. Đã đăng ký bản quyền.
-</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function () {
+    const typeMap = {
+        'f-standard': 'standard',
+        'f-deluxe':   'deluxe',
+        'f-suite':    'suite',
+        'f-penthouse':'family' // Use 'family' for Penthouse/Family checkbox
+    };
+
+    function applyFilter() {
+        const checkedTypes = Object.keys(typeMap).filter(id => {
+            const el = document.getElementById(id);
+            return el && el.checked;
+        });
+        const filterByType = checkedTypes.length > 0;
+
+        const minPriceStr = document.getElementById('f-price-min').value;
+        const maxPriceStr = document.getElementById('f-price-max').value;
+        const minPrice = minPriceStr ? parseFloat(minPriceStr) : 0;
+        const maxPrice = maxPriceStr ? parseFloat(maxPriceStr) : Infinity;
+
+        // Amenities filter
+        const wifiChecked = document.getElementById('f-wifi')?.checked;
+        const poolChecked = document.getElementById('f-pool')?.checked;
+        const parkingChecked = document.getElementById('f-parking')?.checked;
+        const breakfastChecked = document.getElementById('f-breakfast')?.checked;
+
+        const cards = document.querySelectorAll('.result-card');
+        let visibleCount = 0;
+
+        cards.forEach(function (card) {
+            const nameEl = card.querySelector('.result-name');
+            const cardText = nameEl ? nameEl.textContent.toLowerCase() : '';
+
+            // Get price from card
+            const priceEl = card.querySelector('.price-total');
+            const price = priceEl ? parseFloat(priceEl.textContent.replace(/,/g, '')) : 0;
+            
+            // For amenities, we might need to check tags or desc if they exist, but for now we filter conditionally.
+            // As a simple demo, we just assume tags are present in `.result-tag` texts.
+            const tags = Array.from(card.querySelectorAll('.result-tag')).map(t => t.textContent.toLowerCase());
+            
+            let show = true;
+
+            // Type filter
+            if (filterByType) {
+                show = show && checkedTypes.some(id => cardText.includes(typeMap[id]));
+            }
+
+            // Price filter
+            if (show) {
+                show = show && (price >= minPrice && price <= maxPrice);
+            }
+
+            // Amenities filter (basic matching if we had tags, but we'll skip strict filtering for now since the mock HTML only has limited tags)
+            // If they are strictly needed, we would check the HTML text content.
+            // if (wifiChecked && !tags.some(t => t.includes('wifi'))) show = false;
+
+            if (show) {
+                card.style.display = '';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const countEl = document.querySelector('.results-count');
+        if (countEl) {
+            countEl.textContent = visibleCount + ' chỗ nghỉ tìm thấy';
+        }
+    }
+
+    // Make entire card clickable
+    document.querySelectorAll('.result-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            // Prevent navigation if clicking on a button, form, or existing link
+            if (e.target.closest('button') || e.target.closest('form') || e.target.closest('a')) {
+                return;
+            }
+            const link = card.querySelector('.result-name');
+            if (link) {
+                window.location.href = link.href;
+            }
+        });
+        // Make it look clickable
+        card.style.cursor = 'pointer';
+    });
+
+    // Attach listeners
+    ['f-standard', 'f-deluxe', 'f-suite', 'f-penthouse', 'f-wifi', 'f-pool', 'f-parking', 'f-breakfast'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', applyFilter);
+    });
+    
+    document.getElementById('f-price-min').addEventListener('input', applyFilter);
+    document.getElementById('f-price-max').addEventListener('input', applyFilter);
+
+    // Uncheck all by default to show all rooms on first load, or just apply whatever is checked.
+    // If the HTML has 'checked' by default for deluxe/suite, it will hide standard.
+    // Let's just remove the 'checked' state from HTML by unchecking them via JS on load, 
+    // OR we can leave them and let it filter. It's better to show all by default!
+    document.querySelectorAll('.filter-check input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+    applyFilter();
+    
+    // Guest Popover Logic for rooms.html
+    const guestTrigger = document.getElementById('guest-trigger');
+    const guestPopover = document.getElementById('guest-popover');
+    const inpGuests = document.getElementById('inp-guests');
+
+    let counts = { adult: 2, child: 0, room: 1 };
+
+    function updateGuests() {
+        document.getElementById('count-adult').textContent = counts.adult;
+        document.getElementById('count-child').textContent = counts.child;
+        document.getElementById('count-room').textContent = counts.room;
+
+        document.getElementById('btn-adult-minus').disabled = counts.adult <= 1;
+        document.getElementById('btn-child-minus').disabled = counts.child <= 0;
+        document.getElementById('btn-room-minus').disabled = counts.room <= 1;
+
+        const totalGuests = counts.adult + counts.child;
+        inpGuests.value = `${totalGuests} Khách, ${counts.room} Phòng`;
+        
+        // Also update the display in results header if it exists
+        const rhGuests = document.querySelector('.rh-guests');
+        if (rhGuests) rhGuests.textContent = `${totalGuests} Khách, ${counts.room} Phòng`;
+    }
+
+    guestTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        guestPopover.classList.toggle('active');
+    });
+
+    guestPopover.addEventListener('click', (e) => e.stopPropagation());
+    document.addEventListener('click', () => guestPopover.classList.remove('active'));
+
+    ['adult', 'child', 'room'].forEach(type => {
+        document.getElementById(`btn-${type}-minus`).addEventListener('click', () => {
+            if (counts[type] > (type === 'child' ? 0 : 1)) {
+                counts[type]--;
+                updateGuests();
+            }
+        });
+        document.getElementById(`btn-${type}-plus`).addEventListener('click', () => {
+            counts[type]++;
+            updateGuests();
+        });
+    });
+})();
+</script>
 </body>
 </html>

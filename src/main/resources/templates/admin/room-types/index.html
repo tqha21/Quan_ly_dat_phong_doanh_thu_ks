@@ -2,64 +2,150 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý Loại phòng</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Loại phòng — HTD Hotel Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f4f6f9; font-family: 'Inter', sans-serif; }
-        .wrapper { display: flex; }
-        .content { padding: 40px; width: 100%; }
-        .custom-card { border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: none; }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Inter',sans-serif;background:#f5f7fa;color:#1a2332;display:flex;min-height:100vh;}
+        .admin-wrapper{display:flex;width:100%;}
+        .admin-content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+        .admin-topbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:0 32px;height:64px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;}
+        .topbar-title{font-size:16px;font-weight:700;color:#1a2332;}
+        .topbar-search{flex:1;max-width:360px;margin-left:24px;display:flex;align-items:center;gap:8px;background:#f5f7fa;border:1.5px solid #e5e7eb;border-radius:10px;padding:8px 14px;}
+        .topbar-search input{border:none;outline:none;background:transparent;font-size:14px;color:#1a2332;width:100%;}
+        .topbar-search input::placeholder{color:#9ca3af;}
+        .topbar-search svg{color:#9ca3af;flex-shrink:0;}
+        .topbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px;}
+        .topbar-avatar{width:38px;height:38px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;}
+
+        .admin-main{flex:1;padding:32px;overflow-y:auto;}
+        .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+        .page-title{font-size:26px;font-weight:800;color:#1a2332;}
+        .page-sub{font-size:14px;color:#6b7280;margin-top:4px;}
+        
+        .btn-primary{display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:700;text-decoration:none;transition:background .2s;cursor:pointer;}
+        .btn-primary:hover{background:#1d4ed8;}
+
+        .table-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+        .search-inline{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 14px;width:280px;}
+        .search-inline input{border:none;outline:none;font-size:14px;color:#1a2332;background:transparent;width:100%;}
+        .search-inline input::placeholder{color:#9ca3af;}
+
+        .table-card{background:#fff;border-radius:14px;border:1px solid #e5e7eb;overflow:hidden;}
+        table{width:100%;border-collapse:collapse;}
+        thead{background:#f8faff;}
+        th{padding:13px 16px;text-align:left;font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+        td{padding:13px 16px;border-bottom:1px solid #f0f0f0;font-size:13.5px;vertical-align:middle;}
+        tr:last-child td{border-bottom:none;}
+        tr:hover td{background:#fafbff;}
+
+        .rt-code{font-weight:700;color:#9ca3af;font-size:12px;}
+        .rt-name{font-weight:700;color:#1a2332;font-size:14.5px;}
+        .amount{font-weight:800;color:#1a2332;}
+        .capacity{font-size:13px;color:#374151;display:flex;align-items:center;gap:4px;}
+        
+        .status-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;}
+        .s-active{background:#dcfce7;color:#16a34a;}
+        .s-inactive{background:#f3f4f6;color:#6b7280;}
+
+        .actions-cell{display:flex;gap:6px;align-items:center;justify-content:flex-end;}
+        .btn-edit{padding:6px 12px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;color:#374151;font-size:12px;font-weight:600;text-decoration:none;transition:all .2s;}
+        .btn-edit:hover{border-color:#2563eb;color:#2563eb;}
+        .btn-delete{padding:6px 12px;border:1.5px solid #fecaca;border-radius:8px;background:#fff;color:#ef4444;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+        .btn-delete:hover{border-color:#ef4444;background:#fef2f2;}
+        .btn-delete:disabled{opacity:0.5;cursor:not-allowed;border-color:#e5e7eb;color:#9ca3af;background:#f9fafb;}
+
+        .alert{padding:12px 16px;border-radius:10px;font-size:14px;font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+        .alert-success{background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;}
+        .alert-warning{background:#fef3c7;color:#d97706;border:1px solid #fde68a;}
     </style>
 </head>
 <body>
-<div class="wrapper">
-    <!-- Include Sidebar -->
+<div class="admin-wrapper">
     <div th:replace="~{fragments/admin-sidebar :: sidebar}"></div>
     
-    <div class="content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-dark">Danh sách Loại Phòng</h2>
-            <a th:href="@{/admin/room-types/create}" class="btn btn-primary fw-bold shadow-sm" style="background-color: #667eea; border: none;">
-                <i class="bi bi-plus-circle me-1"></i> Thêm Mới
-            </a>
+    <div class="admin-content">
+        <div class="admin-topbar">
+            <span class="topbar-title">Cổng Quản trị</span>
+            <div class="topbar-search">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input type="text" placeholder="Tìm kiếm..." id="topbar-search">
+            </div>
+            <div class="topbar-actions">
+                <div class="topbar-avatar"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+            </div>
         </div>
-        
-        <div th:if="${param.success}" class="alert alert-success shadow-sm rounded-3"><i class="bi bi-check-circle-fill me-2"></i> Lưu dữ liệu thành công!</div>
-        <div th:if="${param.deleted}" class="alert alert-warning shadow-sm rounded-3"><i class="bi bi-exclamation-triangle-fill me-2"></i> Đã chuyển loại phòng sang trạng thái Ngừng Hoạt Động!</div>
 
-        <div class="card custom-card">
-            <div class="card-body p-0">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+        <div class="admin-main">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Loại phòng</h1>
+                    <p class="page-sub">Quản lý các hạng phòng khách sạn, giá và sức chứa.</p>
+                </div>
+                <a th:href="@{/admin/room-types/create}" class="btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Thêm Loại phòng
+                </a>
+            </div>
+
+            <div th:if="${param.success}" class="alert alert-success">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                Lưu loại phòng thành công!
+            </div>
+            <div th:if="${param.deleted}" class="alert alert-warning">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Loại phòng đã được chuyển sang trạng thái Ngừng Hoạt Động.
+            </div>
+
+            <div class="table-toolbar">
+                <div class="search-inline">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="text" placeholder="Tìm tên loại phòng..." oninput="filterRoomTypes(this.value)">
+                </div>
+                <span style="font-size:13px;color:#6b7280;">Tổng <strong th:text="${roomTypes != null ? roomTypes.size() : 0}">0</strong> loại phòng</span>
+            </div>
+
+            <div class="table-card">
+                <table id="rt-table">
+                    <thead>
                         <tr>
-                            <th class="ps-4">Mã</th>
-                            <th>Tên loại phòng</th>
+                            <th>Mã</th>
+                            <th>Tên hạng phòng</th>
                             <th>Sức chứa</th>
-                            <th>Giá (VNĐ)</th>
+                            <th>Giá mỗi đêm (VNĐ)</th>
                             <th>Trạng thái</th>
-                            <th class="text-center">Thao tác</th>
+                            <th style="text-align:right">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="rt : ${roomTypes}">
-                            <td class="ps-4 text-muted" th:text="${rt.id}"></td>
-                            <td class="fw-bold text-dark" th:text="${rt.name}"></td>
-                            <td th:text="${rt.capacity + ' người'}"></td>
-                            <td class="text-danger fw-bold" th:text="${#numbers.formatDecimal(rt.price, 0, 'COMMA', 0, 'POINT')}"></td>
+                        <tr th:each="rt : ${roomTypes}" th:data-name="${rt.name}">
+                            <td><span class="rt-code" th:text="${rt.id}"></span></td>
+                            <td><span class="rt-name" th:text="${rt.name}"></span></td>
                             <td>
-                                <span th:if="${rt.status == 'ACTIVE'}" class="badge bg-success rounded-pill px-3 py-2">Hoạt động</span>
-                                <span th:if="${rt.status == 'INACTIVE'}" class="badge bg-secondary rounded-pill px-3 py-2">Ngừng HĐ</span>
+                                <span class="capacity">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                    <span th:text="${rt.capacity + ' người'}"></span>
+                                </span>
                             </td>
-                            <td class="text-center">
-                                <a th:href="@{/admin/room-types/edit/{id}(id=${rt.id})}" class="btn btn-sm btn-outline-primary shadow-sm"><i class="bi bi-pencil"></i></a>
-                                <form th:action="@{/admin/room-types/delete/{id}(id=${rt.id})}" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn vô hiệu hóa loại phòng này?');">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm" th:disabled="${rt.status == 'INACTIVE'}"><i class="bi bi-trash"></i></button>
+                            <td class="amount" th:text="${#numbers.formatDecimal(rt.price, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td>
+                                <span th:if="${rt.status == 'ACTIVE'}" class="status-badge s-active">Hoạt động</span>
+                                <span th:if="${rt.status == 'INACTIVE'}" class="status-badge s-inactive">Ngừng HĐ</span>
+                            </td>
+                            <td class="actions-cell">
+                                <a th:href="@{/admin/room-types/edit/{id}(id=${rt.id})}" class="btn-edit">Sửa</a>
+                                <form th:action="@{/admin/room-types/delete/{id}(id=${rt.id})}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn vô hiệu hóa loại phòng này?');">
+                                    <button type="submit" class="btn-delete" th:disabled="${rt.status == 'INACTIVE'}">Vô hiệu hóa</button>
                                 </form>
                             </td>
                         </tr>
                         <tr th:if="${roomTypes.empty}">
-                            <td colspan="6" class="text-center py-4 text-muted">Chưa có dữ liệu loại phòng.</td>
+                            <td colspan="6" style="text-align:center;padding:40px;color:#9ca3af;">
+                                <div style="font-size:32px;margin-bottom:12px;">🛏️</div>
+                                <div style="font-weight:700;color:#374151;margin-bottom:4px;">Chưa có dữ liệu loại phòng</div>
+                                <div style="font-size:13px;">Nhấn "Thêm Loại phòng" để tạo hạng phòng mới.</div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -67,5 +153,14 @@
         </div>
     </div>
 </div>
+<script>
+function filterRoomTypes(q) {
+    var rows = document.querySelectorAll('#rt-table tbody tr[data-name]');
+    rows.forEach(function(r) {
+        var match = (r.dataset.name||'').toLowerCase().includes(q.toLowerCase());
+        r.style.display = match ? '' : 'none';
+    });
+}
+</script>
 </body>
 </html>

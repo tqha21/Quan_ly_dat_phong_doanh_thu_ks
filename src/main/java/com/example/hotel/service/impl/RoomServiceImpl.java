@@ -22,11 +22,13 @@ public class RoomServiceImpl implements RoomService {
     private final RoomTypeRepository roomTypeRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<RoomDTO> getAllRooms() {
         return roomRepository.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RoomDTO getRoomById(String id) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy phòng"));
@@ -79,6 +81,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RoomDTO> searchAvailableRooms(java.time.LocalDate checkIn, java.time.LocalDate checkOut) {
         if (checkIn == null || checkOut == null) return java.util.Collections.emptyList();
         if (checkOut.isBefore(checkIn) || checkOut.isEqual(checkIn)) {
@@ -99,6 +102,18 @@ public class RoomServiceImpl implements RoomService {
         dto.setCapacity(room.getRoomType().getCapacity());
         dto.setDescription(room.getDescription());
         dto.setStatus(room.getStatus());
+        dto.setArea(room.getRoomType().getArea());
+        
+        if (room.getImages() != null && !room.getImages().isEmpty()) {
+            dto.setImageUrls(room.getImages().stream().map(img -> img.getImageUrl()).collect(Collectors.toList()));
+        }
+        
+        if (room.getRoomType().getAmenities() != null && !room.getRoomType().getAmenities().isEmpty()) {
+            dto.setAmenities(room.getRoomType().getAmenities().stream()
+                .map(a -> new com.example.hotel.dto.AmenityDTO(a.getId(), a.getName(), a.getIcon()))
+                .collect(Collectors.toList()));
+        }
+        
         return dto;
     }
 }

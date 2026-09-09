@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Về Chúng Tôi | HTD Hotel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #fff; color: #1a2332; line-height: 1.6; }
+
+        /* HERO */
+        .about-hero {
+            padding: 100px 24px 80px; text-align: center;
+            background: #f8faff; border-bottom: 1px solid #e5e7eb;
+        }
+        .about-hero-title { font-size: 48px; font-weight: 800; color: #1a2332; margin-bottom: 24px; letter-spacing: -1px; }
+        .about-hero-desc { font-size: 18px; color: #6b7280; max-width: 700px; margin: 0 auto; line-height: 1.6; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 80px 24px; }
+        
+        /* STORY SECTION */
+        .story-section { display: flex; gap: 60px; align-items: center; margin-bottom: 80px; }
+        .story-text { flex: 1; }
+        .story-title { font-size: 32px; font-weight: 800; margin-bottom: 20px; color: #1a2332; }
+        .story-desc { font-size: 16px; color: #4b5563; margin-bottom: 16px; }
+        .story-img-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .story-img-grid img { width: 100%; height: 240px; object-fit: cover; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .story-img-grid img:nth-child(2) { transform: translateY(30px); }
+
+        /* STATS */
+        .stats-wrap {
+            background: #003b95; color: #fff; border-radius: 20px;
+            padding: 60px; display: flex; justify-content: space-around;
+            text-align: center; margin-bottom: 80px;
+        }
+        .stat-item .stat-num { font-size: 48px; font-weight: 800; margin-bottom: 8px; color: #ffb700; }
+        .stat-item .stat-label { font-size: 16px; font-weight: 500; opacity: 0.9; }
+
+        /* VALUES */
+        .values-section { text-align: center; }
+        .values-title { font-size: 32px; font-weight: 800; margin-bottom: 40px; }
+        .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .value-card { padding: 40px 30px; background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; transition: transform 0.3s, box-shadow 0.3s; }
+        .value-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .value-icon { font-size: 40px; margin-bottom: 20px; color: #006ce4; }
+        .value-name { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+        .value-desc { font-size: 15px; color: #6b7280; }
+
+        @media (max-width: 768px) {
+            .story-section { flex-direction: column; }
+            .story-img-grid img:nth-child(2) { transform: none; }
+            .stats-wrap { flex-direction: column; gap: 40px; padding: 40px 20px; }
+            .values-grid { grid-template-columns: 1fr; }
+            .about-hero-title { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="about-hero">
+    <h1 class="about-hero-title">Định Nghĩa Lại Lòng Hiếu Khách</h1>
+    <p class="about-hero-desc">HTD Hotel không chỉ là nơi để lưu trú, mà còn là một điểm đến của trải nghiệm, sự tinh tế và những kỷ niệm khó quên. Chúng tôi cam kết mang đến dịch vụ hoàn hảo từ trái tim.</p>
+</div>
+
+<div class="container">
+    <div class="story-section">
+        <div class="story-text">
+            <h2 class="story-title">Câu Chuyện Của Chúng Tôi</h2>
+            <p class="story-desc">Được thành lập từ năm 2015, HTD Hotel bắt đầu từ một ý tưởng đơn giản: tạo ra một không gian lưu trú sang trọng, đẳng cấp nhưng vẫn giữ được sự ấm cúng và gần gũi như chính ngôi nhà của bạn.</p>
+            <p class="story-desc">Trải qua nhiều năm phát triển, chúng tôi đã không ngừng mở rộng hệ thống, nâng cấp dịch vụ và tiện ích để đáp ứng nhu cầu ngày càng cao của du khách trong và ngoài nước. Từ các kỳ nghỉ dưỡng lãng mạn cho các cặp đôi, đến những chuyến công tác bận rộn hay kỳ nghỉ gia đình, HTD Hotel luôn là lựa chọn hàng đầu.</p>
+        </div>
+        <div class="story-img-grid">
+            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80" alt="Khách sạn 1">
+            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=80" alt="Khách sạn 2">
+        </div>
+    </div>
+
+    <div class="stats-wrap">
+        <div class="stat-item">
+            <div class="stat-num">10+</div>
+            <div class="stat-label">Năm kinh nghiệm</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">500+</div>
+            <div class="stat-label">Phòng tiêu chuẩn 5 sao</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">1M+</div>
+            <div class="stat-label">Khách hàng hài lòng</div>
+        </div>
+    </div>
+
+    <div class="values-section">
+        <h2 class="values-title">Giá Trị Cốt Lõi</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">❤️</div>
+                <h3 class="value-name">Phục Vụ Từ Trái Tim</h3>
+                <p class="value-desc">Chúng tôi tin rằng sự chân thành và nhiệt huyết là chìa khóa để chạm đến trái tim của mỗi khách hàng.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">⭐</div>
+                <h3 class="value-name">Chất Lượng Vượt Trội</h3>
+                <p class="value-desc">Mọi chi tiết nhỏ nhất trong phòng nghỉ và dịch vụ đều được chúng tôi chăm chút tỉ mỉ để mang đến trải nghiệm tuyệt vời.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🌿</div>
+                <h3 class="value-name">Bền Vững & Môi Trường</h3>
+                <p class="value-desc">Cam kết phát triển bền vững, ưu tiên sử dụng vật liệu thân thiện với môi trường và giảm thiểu rác thải nhựa.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+    document.getElementById('nav-about').classList.add('active');
+    document.getElementById('nav-home').classList.remove('active');
+</script>
+</body>
+</html>

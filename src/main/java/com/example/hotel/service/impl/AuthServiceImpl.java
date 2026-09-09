@@ -50,4 +50,17 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
     }
+
+    @Override
+    @Transactional
+    public String resetPassword(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Email không tồn tại trong hệ thống."));
+        
+        String newPassword = UUID.randomUUID().toString().substring(0, 8);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        
+        return newPassword;
+    }
 }

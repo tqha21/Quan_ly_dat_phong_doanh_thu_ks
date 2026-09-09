@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.UUID;
+import com.example.hotel.entity.Room;
+import com.example.hotel.repository.RoomRepository;
 
 @Component
 @RequiredArgsConstructor
@@ -21,6 +24,7 @@ public class DataSeeder implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final RoomTypeRepository roomTypeRepository;
+    private final RoomRepository roomRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -76,14 +80,31 @@ public class DataSeeder implements CommandLineRunner {
         // Tự động tạo Room Type mẫu
         if (roomTypeRepository.count() == 0) {
             roomTypeRepository.save(new RoomType("RT01", "Standard", "Phòng tiêu chuẩn", new BigDecimal("500000"), 2,
-                    new BigDecimal("25.0"), "ACTIVE", null, null, null));
+                    new BigDecimal("25.0"), "ACTIVE", null, null, null, null));
             roomTypeRepository.save(new RoomType("RT02", "Deluxe", "Phòng cao cấp, có view đẹp",
-                    new BigDecimal("800000"), 2, new BigDecimal("35.0"), "ACTIVE", null, null, null));
+                    new BigDecimal("800000"), 2, new BigDecimal("35.0"), "ACTIVE", null, null, null, null));
             roomTypeRepository.save(new RoomType("RT03", "Suite", "Phòng hạng sang", new BigDecimal("1500000"), 2,
-                    new BigDecimal("50.0"), "ACTIVE", null, null, null));
+                    new BigDecimal("50.0"), "ACTIVE", null, null, null, null));
             roomTypeRepository.save(new RoomType("RT04", "Family", "Phòng dành cho gia đình", new BigDecimal("1200000"),
-                    4, new BigDecimal("45.0"), "ACTIVE", null, null, null));
+                    4, new BigDecimal("45.0"), "ACTIVE", null, null, null, null));
             System.out.println("✅ DataSeeder: Đã tạo Room Type mẫu.");
+        }
+
+        // Tự động tạo Room mẫu
+        if (roomRepository.count() == 0) {
+            RoomType rt01 = roomTypeRepository.findById("RT01").orElseThrow();
+            RoomType rt02 = roomTypeRepository.findById("RT02").orElseThrow();
+            RoomType rt03 = roomTypeRepository.findById("RT03").orElseThrow();
+            RoomType rt04 = roomTypeRepository.findById("RT04").orElseThrow();
+
+            roomRepository.save(new Room("R01", rt01, "101", 1, "AVAILABLE", "Phòng tiêu chuẩn view vườn", null, null, 0L, null));
+            roomRepository.save(new Room("R02", rt01, "102", 1, "AVAILABLE", "Phòng tiêu chuẩn 1 giường đôi", null, null, 0L, null));
+            roomRepository.save(new Room("R03", rt02, "201", 2, "AVAILABLE", "Phòng cao cấp ban công rộng", null, null, 0L, null));
+            roomRepository.save(new Room("R04", rt02, "202", 2, "AVAILABLE", "Phòng cao cấp đầy đủ tiện nghi", null, null, 0L, null));
+            roomRepository.save(new Room("R05", rt03, "301", 3, "AVAILABLE", "Phòng Suite hoàng gia", null, null, 0L, null));
+            roomRepository.save(new Room("R06", rt04, "401", 4, "AVAILABLE", "Phòng gia đình có bếp", null, null, 0L, null));
+            
+            System.out.println("✅ DataSeeder: Đã tạo Room mẫu.");
         }
     }
 }

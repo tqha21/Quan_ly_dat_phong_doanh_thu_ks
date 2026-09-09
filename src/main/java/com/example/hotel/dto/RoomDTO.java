@@ -25,4 +25,8 @@ public class RoomDTO {
     private String description;
     
     private String status = "AVAILABLE"; // AVAILABLE, OCCUPIED, MAINTENANCE, INACTIVE
+    
+    private java.math.BigDecimal area;
+    private java.util.List<String> imageUrls;
+    private java.util.List<AmenityDTO> amenities;
 }

@@ -4,4 +4,5 @@ import com.example.hotel.dto.RegisterRequest;
 
 public interface AuthService {
     void registerCustomer(RegisterRequest request);
+    String resetPassword(String email);
 }

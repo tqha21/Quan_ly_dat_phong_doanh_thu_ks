@@ -14,6 +14,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
+import com.example.hotel.repository.HotelServiceRepository;
+
 @Controller
 @RequestMapping("/customer/bookings")
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class CustomerBookingController {
 
     private final BookingService bookingService;
     private final RoomService roomService;
+    private final HotelServiceRepository hotelServiceRepository;
 
     @GetMapping("/create")
     public String showBookingForm(@RequestParam String roomId,
@@ -36,6 +39,7 @@ public class CustomerBookingController {
 
         model.addAttribute("room", room);
         model.addAttribute("bookingRequest", request);
+        model.addAttribute("services", hotelServiceRepository.findByStatus("ACTIVE"));
         return "customer/booking-form";
     }
 

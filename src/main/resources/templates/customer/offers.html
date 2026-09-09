@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ưu đãi & Khuyến mãi | HTD Hotel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #f8faff; color: #1a2332; line-height: 1.5; }
+
+        /* HEADER BANNER */
+        .page-header {
+            background: linear-gradient(135deg, #003b95 0%, #006ce4 100%);
+            padding: 80px 24px; text-align: center; color: #fff;
+        }
+        .page-title { font-size: 42px; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
+        .page-sub { font-size: 18px; color: rgba(255,255,255,0.85); max-width: 600px; margin: 0 auto; }
+
+        /* CONTAINER */
+        .container { max-width: 1200px; margin: 0 auto; padding: 60px 24px; }
+
+        /* OFFERS GRID */
+        .offers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+        
+        .offer-card {
+            background: #fff; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+            display: flex; flex-direction: column;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .offer-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+        
+        .offer-img { width: 100%; height: 260px; object-fit: cover; }
+        .offer-body { padding: 30px; display: flex; flex-direction: column; flex: 1; }
+        .offer-tag { 
+            display: inline-block; background: #ffb700; color: #1a2332; 
+            font-size: 12px; font-weight: 700; padding: 6px 12px; 
+            border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 16px; width: fit-content;
+        }
+        .offer-title { font-size: 24px; font-weight: 800; color: #1a2332; margin-bottom: 12px; line-height: 1.3; }
+        .offer-desc { font-size: 15px; color: #6b7280; margin-bottom: 24px; line-height: 1.6; flex: 1; }
+        
+        .offer-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px dashed #e5e7eb; }
+        .offer-date { font-size: 13px; font-weight: 600; color: #2563eb; display: flex; align-items: center; gap: 6px; }
+        .btn-offer {
+            background: #006ce4; color: #fff; text-decoration: none;
+            padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 700;
+            transition: background 0.2s;
+        }
+        .btn-offer:hover { background: #003b95; }
+
+        @media (max-width: 768px) {
+            .offers-grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="page-header">
+    <h1 class="page-title">Ưu đãi & Khuyến mãi</h1>
+    <p class="page-sub">Tiết kiệm nhiều hơn cho kỳ nghỉ tuyệt vời của bạn với các chương trình khuyến mãi độc quyền từ HTD Hotel.</p>
+</div>
+
+<div class="container">
+    <div class="offers-grid">
+        <!-- Offer 1 -->
+        <div class="offer-card">
+            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80" alt="Chào hè rực rỡ" class="offer-img">
+            <div class="offer-body">
+                <span class="offer-tag">Giảm 20%</span>
+                <h3 class="offer-title">Chào Hè Rực Rỡ — Nghỉ Dưỡng Thả Ga</h3>
+                <p class="offer-desc">Nhận ngay ưu đãi giảm giá lên đến 20% cho tất cả các hạng phòng khi đặt trước 14 ngày. Thỏa sức tận hưởng hồ bơi vô cực và buffet sáng miễn phí.</p>
+                <div class="offer-footer">
+                    <span class="offer-date"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Hết hạn: 31/12/2026</span>
+                    <a href="/rooms/R01" class="btn-offer">Đặt phòng ngay</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Offer 2 -->
+        <div class="offer-card">
+            <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80" alt="Kỳ nghỉ lãng mạn" class="offer-img">
+            <div class="offer-body">
+                <span class="offer-tag">Gói Đặc Biệt</span>
+                <h3 class="offer-title">Kỳ Nghỉ Lãng Mạn Cho Cặp Đôi</h3>
+                <p class="offer-desc">Trọn gói nghỉ dưỡng 3 ngày 2 đêm tại phòng Suite sang trọng. Tặng kèm bữa tối dưới ánh nến tại nhà hàng 5 sao và 60 phút massage dành cho 2 người.</p>
+                <div class="offer-footer">
+                    <span class="offer-date"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Quanh năm</span>
+                    <a href="/rooms/R05" class="btn-offer">Khám phá</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Offer 3 -->
+        <div class="offer-card">
+            <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80" alt="Staycation cuối tuần" class="offer-img">
+            <div class="offer-body">
+                <span class="offer-tag">Staycation</span>
+                <h3 class="offer-title">Nạp Đầy Năng Lượng Cuối Tuần</h3>
+                <p class="offer-desc">Tự thưởng cho bản thân một kỳ nghỉ ngắn ngày. Miễn phí trả phòng trễ đến 16:00 và giảm 30% tất cả các dịch vụ Spa tại khách sạn.</p>
+                <div class="offer-footer">
+                    <span class="offer-date"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Chỉ áp dụng T7 & CN</span>
+                    <a href="/rooms/R03" class="btn-offer">Đặt phòng ngay</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Offer 4 -->
+        <div class="offer-card">
+            <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80" alt="Đặt sớm ưu đãi sâu" class="offer-img">
+            <div class="offer-body">
+                <span class="offer-tag">Flash Sale</span>
+                <h3 class="offer-title">Đặt Sớm — Ưu Đãi Cực Sâu</h3>
+                <p class="offer-desc">Lên kế hoạch sớm cho chuyến đi của bạn. Giảm giá 25% giá phòng không hoàn hủy. Cam kết giá tốt nhất chỉ có tại website HTD Hotel.</p>
+                <div class="offer-footer">
+                    <span class="offer-date"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Giới hạn mỗi ngày</span>
+                    <a href="/rooms/R02" class="btn-offer">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+    document.getElementById('nav-offers').classList.add('active');
+    document.getElementById('nav-home').classList.remove('active');
+</script>
+</body>
+</html>

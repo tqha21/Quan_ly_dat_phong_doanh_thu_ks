@@ -3,66 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập - Quản lý Khách sạn</title>
-    <!-- Ưu tiên UI/UX: Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Đăng nhập — HTD Hotel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-        .auth-card { 
-            max-width: 400px; 
-            margin: auto; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
-            border: none;
-        }
-        .btn-custom {
-            background-color: #667eea;
-            border: none;
-        }
-        .btn-custom:hover {
-            background-color: #5a6cd6;
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Inter',sans-serif;min-height:100vh;display:flex;background:#f5f7fa;}
+
+        .auth-left{flex:1;background:linear-gradient(135deg,#0f1f3d 0%,#1e3a6e 50%,#2563eb 100%);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+        .auth-left-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=900&q=80') center/cover;opacity:.25;}
+        .auth-left-content{position:relative;z-index:2;padding:48px;text-align:center;color:#fff;}
+        .auth-brand{font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-bottom:16px;}
+        .auth-brand span{color:#60a5fa;}
+        .auth-tagline{font-size:18px;font-weight:600;margin-bottom:8px;line-height:1.3;}
+        .auth-sub{font-size:14px;color:rgba(255,255,255,.65);line-height:1.6;}
+        .auth-features{margin-top:32px;display:flex;flex-direction:column;gap:14px;text-align:left;}
+        .auth-feature{display:flex;align-items:center;gap:12px;font-size:14px;color:rgba(255,255,255,.8);}
+        .feat-icon{width:32px;height:32px;background:rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+        .auth-right{width:480px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:40px 48px;}
+        .auth-form-wrap{width:100%;max-width:380px;}
+        .form-logo{font-size:22px;font-weight:800;color:#1a2332;margin-bottom:8px;}
+        .form-logo span{color:#2563eb;}
+        .form-title{font-size:24px;font-weight:800;color:#1a2332;margin-bottom:4px;}
+        .form-sub{font-size:14px;color:#6b7280;margin-bottom:32px;}
+        .form-sub a{color:#2563eb;text-decoration:none;font-weight:600;}
+        .form-sub a:hover{text-decoration:underline;}
+
+        .form-group{margin-bottom:18px;}
+        .form-label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:8px;}
+        .form-control{width:100%;padding:12px 14px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:14px;color:#1a2332;background:#fff;outline:none;transition:border-color .2s,box-shadow .2s;font-family:'Inter',sans-serif;}
+        .form-control:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+        .form-control::placeholder{color:#9ca3af;}
+
+        .form-row-split{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+        .remember-check{display:flex;align-items:center;gap:8px;font-size:13px;color:#374151;cursor:pointer;}
+        .remember-check input{accent-color:#2563eb;width:15px;height:15px;}
+        .forgot-link{font-size:13px;color:#2563eb;text-decoration:none;font-weight:600;}
+        .forgot-link:hover{text-decoration:underline;}
+
+        .btn-submit{width:100%;padding:13px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;font-family:'Inter',sans-serif;}
+        .btn-submit:hover{background:#1d4ed8;}
+
+        .divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:#9ca3af;font-size:13px;}
+        .divider::before,.divider::after{content:'';flex:1;height:1px;background:#e5e7eb;}
+
+        .btn-google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:11px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:14px;font-weight:600;color:#374151;background:#fff;cursor:pointer;transition:all .2s;text-decoration:none;}
+        .btn-google:hover{border-color:#d1d5db;background:#f9fafb;color:#374151;}
+
+        .alert{padding:12px 14px;border-radius:10px;font-size:13.5px;font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+        .alert-danger{background:#fef2f2;color:#ef4444;border:1px solid #fecaca;}
+        .alert-info{background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;}
+        .alert-success{background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;}
+
+        .back-home{display:block;text-align:center;margin-top:20px;font-size:13px;color:#6b7280;text-decoration:none;}
+        .back-home:hover{color:#2563eb;}
+
+        @media(max-width:768px){
+            .auth-left{display:none;}
+            .auth-right{width:100%;padding:32px 24px;}
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="card auth-card">
-        <div class="card-body p-5">
-            <h3 class="text-center mb-4 text-primary fw-bold" style="color: #667eea !important;">LUXURY HOTEL</h3>
-            
-            <div th:if="${param.error}" class="alert alert-danger shadow-sm text-center">
-                Tài khoản hoặc mật khẩu không chính xác!
+<div class="auth-left">
+    <div class="auth-left-bg"></div>
+    <div class="auth-left-content">
+        <div class="auth-brand">🏨 HTD<span>Hotel</span></div>
+        <div class="auth-tagline">Kỳ nghỉ hoàn hảo<br>bắt đầu từ đây</div>
+        <div class="auth-sub">Hàng nghìn phòng cao cấp tại các điểm đến hàng đầu Việt Nam</div>
+        <div class="auth-features">
+            <div class="auth-feature">
+                <div class="feat-icon">✓</div>
+                Miễn phí hủy cho hầu hết đặt phòng
             </div>
-            <div th:if="${param.logout}" class="alert alert-info shadow-sm text-center">
-                Bạn đã đăng xuất an toàn.
+            <div class="auth-feature">
+                <div class="feat-icon">⭐</div>
+                Hơn 300 triệu đánh giá đáng tin cậy
             </div>
-            <div th:if="${param.registered}" class="alert alert-success shadow-sm text-center">
-                Đăng ký thành công! Đăng nhập ngay.
-            </div>
-
-            <!-- Form xử lý bởi Spring Security -->
-            <form th:action="@{/login}" method="post">
-                <div class="mb-3">
-                    <label class="form-label text-muted fw-bold">Email</label>
-                    <input type="email" name="username" class="form-control form-control-lg" required placeholder="Nhập email...">
-                </div>
-                <div class="mb-4">
-                    <label class="form-label text-muted fw-bold">Mật khẩu</label>
-                    <input type="password" name="password" class="form-control form-control-lg" required placeholder="********">
-                </div>
-                <button type="submit" class="btn btn-custom btn-lg w-100 text-white fw-bold mb-3">ĐĂNG NHẬP</button>
-            </form>
-            
-            <div class="text-center mt-3">
-                <p class="text-muted">Chưa có tài khoản? <a th:href="@{/register}" class="text-decoration-none fw-bold" style="color: #667eea;">Đăng ký</a></p>
-                <a th:href="@{/}" class="text-decoration-none text-muted small">← Quay lại trang chủ</a>
+            <div class="auth-feature">
+                <div class="feat-icon">🔒</div>
+                Thanh toán an toàn & bảo mật
             </div>
         </div>
+    </div>
+</div>
+
+<div class="auth-right">
+    <div class="auth-form-wrap">
+        <div class="form-logo">🏨 HTD<span>Hotel</span></div>
+        <h1 class="form-title">Chào mừng trở lại</h1>
+        <p class="form-sub">Chưa có tài khoản? <a th:href="@{/register}">Tạo tài khoản miễn phí</a></p>
+
+        <div th:if="${param.error}" class="alert alert-danger">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            Tài khoản hoặc mật khẩu không chính xác!
+        </div>
+        <div th:if="${param.logout}" class="alert alert-info">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Bạn đã đăng xuất an toàn.
+        </div>
+        <div th:if="${param.registered}" class="alert alert-success">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Đăng ký thành công! Hãy đăng nhập.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label class="form-label">Địa chỉ Email</label>
+                <input type="email" name="username" class="form-control" required placeholder="example@email.com" id="inp-email">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Mật khẩu</label>
+                <input type="password" name="password" class="form-control" required placeholder="Nhập mật khẩu" id="inp-password">
+            </div>
+            <div class="form-row-split">
+                <label class="remember-check">
+                    <input type="checkbox" id="remember-me"> Ghi nhớ đăng nhập
+                </label>
+                <a th:href="@{/forgot-password}" class="forgot-link">Quên mật khẩu?</a>
+            </div>
+            <button type="submit" class="btn-submit" id="btn-login">Đăng nhập</button>
+        </form>
+
+        <div class="divider">hoặc tiếp tục với</div>
+
+        <a href="#" class="btn-google" id="btn-google">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Đăng nhập bằng Google
+        </a>
+
+        <a href="/" class="back-home">← Quay lại trang chủ</a>
     </div>
 </div>
 </body>
