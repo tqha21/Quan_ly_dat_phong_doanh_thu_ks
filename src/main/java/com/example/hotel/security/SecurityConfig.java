@@ -44,15 +44,16 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 // Các trang công khai
                 .requestMatchers("/", "/home", "/rooms", "/rooms/**", "/register", "/login", "/css/**", "/js/**", "/images/**", "/debug/**").permitAll()
-                // Phân quyền theo Role (hasRole tự động thêm tiền tố ROLE_)
+                // Phân quyền theo Role (Ưu tiên khai báo các đường dẫn cụ thể trước)
                 .requestMatchers("/customer/**").hasAnyRole("CUSTOMER", "ADMIN")
-                .requestMatchers("/staff/**").hasAnyRole("STAFF", "ADMIN")
+                .requestMatchers("/admin/bookings", "/admin/bookings/**").hasAnyRole("STAFF", "ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login") // Submit form đến URL này
+                .usernameParameter("email") // Khớp với trường name="email" trong form đăng nhập
                 .successHandler((request, response, authentication) -> {
                     boolean isAdmin = authentication.getAuthorities().stream()
                             .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
